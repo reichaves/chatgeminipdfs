@@ -13,4 +13,4 @@ jobs:
     - name: Run Streamlit App
       env:
         GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}  # Use the secret directly as an environment variable
-      run: streamlit run your_script.py
+      run: streamlit run app.py
