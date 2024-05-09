@@ -105,7 +105,11 @@ Siga estes passos para configurar o ambiente e instalar as bibliotecas necessár
     ```bash
    pip install -r requirements.txt
 
-4. **Executando o Aplicativo**
+4. **Arquivo .env**
+    ```bash
+    Não esqueça de ter um arquivo ".env" com sua GOOGLE_API_KEY
+
+5. **Executando o Aplicativo**
     ```bash
    streamlit run app.py
     Isso iniciará o servidor do Streamlit e abrirá automaticamente
