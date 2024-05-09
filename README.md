@@ -34,6 +34,11 @@ Este script apresenta um chatbot que utiliza **modelos de linguagem avançados**
 - **FAISS:** Biblioteca para indexação e busca de vetores
 - **Langchain:** Biblioteca Python para construir cadeias de processamento de linguagem natural
 
+## Observações
+
+- O script ainda está em desenvolvimento e pode ser aprimorado com novas funcionalidades e modelos de linguagem.
+- É importante lembrar que as respostas do chatbot devem ser sempre verificadas com as fontes originais de informação.
+
 ## Sobre o Autor
 
 **Reinaldo Chaves** trabalha com jornalismo de dados e investigativo, especializado em temas como transparência pública, dados abertos, meio ambiente e políticas de privacidade de dados. Atualmente, ele está na Associação Brasileira de Jornalismo Investigativo (Abraji) e na Repórter Brasil. Projetos notáveis incluem:
@@ -42,8 +47,3 @@ Este script apresenta um chatbot que utiliza **modelos de linguagem avançados**
 - Estudo sobre **detecção de discurso de ódio** com machine learning no antigo Twitter pela iniciativa JournalismAI.
 
 [GitHub](https://github.com/reichaves)
-
-## Observações
-
-- O script ainda está em desenvolvimento e pode ser aprimorado com novas funcionalidades e modelos de linguagem.
-- É importante lembrar que as respostas do chatbot devem ser sempre verificadas com as fontes originais de informação.
