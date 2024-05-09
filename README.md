@@ -2,7 +2,7 @@
 
 ## Introdução
 
-Este script apresenta um chatbot que utiliza **modelos de linguagem avançados** para entrevistar arquivos PDF com fins jornalísticos. O projeto foi desenvolvido durante a *Imersão IA 2024* da Alura e do Google.
+Este script apresenta um chatbot que utiliza **modelos de linguagem avançados** para entrevistar arquivos PDF com fins jornalísticos. O projeto foi desenvolvido durante a **[Imersão IA 2024](https://www.alura.com.br/imersao-ia-google-gemini)** da Alura e do Google.
 
 ## Funcionalidades
 
@@ -42,8 +42,8 @@ Este script apresenta um chatbot que utiliza **modelos de linguagem avançados**
 ## Sobre o Autor
 
 **Reinaldo Chaves** trabalha com jornalismo de dados e investigativo, especializado em temas como transparência pública, dados abertos, meio ambiente e políticas de privacidade de dados. Atualmente, ele está na Associação Brasileira de Jornalismo Investigativo (Abraji) e na Repórter Brasil. Projetos notáveis incluem:
-- **Mapa da Água:** Um projeto finalista nos Sigma Awards de 2023, ligado à Repórter Brasil, envolvendo análise e visualização de dados sobre gestão e qualidade da água no Brasil.
-- **CruzaGrafos:** Associado à Abraji e finalista nos Sigma Awards de 2021, uma ferramenta de jornalismo de dados para investigação de redes e conexões entre pessoas e empresas.
-- Estudo sobre **detecção de discurso de ódio** com machine learning no antigo Twitter pela iniciativa JournalismAI.
+- **[Mapa da Água:](https://github.com/Reporter-Brasil/mapadaagua)** Um projeto finalista nos Sigma Awards de 2023, ligado à Repórter Brasil, envolvendo análise e visualização de dados sobre gestão e qualidade da água no Brasil.
+- **[CruzaGrafos](https://www.abraji.org.br/projetos/cruzagrafos)** Associado à Abraji e finalista nos Sigma Awards de 2021, uma ferramenta de jornalismo de dados para investigação de redes e conexões entre pessoas e empresas.
+- Estudo sobre **[detecção de discurso de ódio](https://github.com/JournalismAI/attackdetector)** com machine learning no antigo Twitter pela iniciativa JournalismAI.
 
-[GitHub](https://github.com/reichaves)
+
