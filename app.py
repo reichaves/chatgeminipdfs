@@ -106,7 +106,7 @@ Alguns exemplos de situações em que a inexigibilidade de licitação pode ser 
     """
 
     model = ChatGoogleGenerativeAI(model="gemini-pro", 
-                                   temperature=0.3,
+                                   temperature=0,
                                    safety_settings = {
                                        HarmCategory.HARM_CATEGORY_UNSPECIFIED: HarmBlockThreshold.BLOCK_NONE,
                                        HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
