@@ -78,6 +78,42 @@ Prompt ruim: "Escrever um poema."
 Prompt bom: "Escrever um poema sobre o amor, utilizando metáforas e imagens vívidas para expressar os sentimentos de amor e paixão. O poema deve ter no mínimo 10 versos e seguir um esquema de rimas ABAB CDCD EFEF. Usar linguagem poética e evocativa."
 
 
+
+# Instruções de Instalação e Execução
+
+## Pré-requisitos
+
+Antes de iniciar, certifique-se de que você possui o Python instalado em seu sistema. Este projeto foi desenvolvido utilizando Python 3.9 ou superior.
+
+## Instalação
+
+Siga estes passos para configurar o ambiente e instalar as bibliotecas necessárias para rodar o `app.py`:
+
+1. **Clone o Repositório:** Primeiramente, clone o repositório do GitHub para o seu computador local utilizando o comando:
+   ```bash
+   git clone https://github.com/seu-usuario/seu-repositorio.git
+   cd seu-repositorio
+
+2. **Crie um Ambiente Virtual (opcional, mas recomendado)**
+   ```bash
+   python -m venv venv
+   Ative o ambiente virtual:
+   .\venv\Scripts\activate (Windows)
+   source venv/bin/activate (macOS/Linux)
+   
+3. **Instale as Bibliotecas Necessárias**
+    ```bash
+   pip install -r requirements.txt
+
+4. **Executando o Aplicativo**
+    ```bash
+   streamlit run app.py
+    Isso iniciará o servidor do Streamlit e abrirá automaticamente uma janela no navegador padrão apontando para o endereço local (geralmente http://localhost:8501), onde o app pode ser visualizado e interagido
+   
+
+   
+
+
 ## Sobre o Autor
 
 **Reinaldo Chaves** trabalha com jornalismo de dados e investigativo, especializado em temas como transparência pública, dados abertos, meio ambiente e políticas de privacidade de dados. Atualmente, ele está na Associação Brasileira de Jornalismo Investigativo (Abraji) e na Repórter Brasil. Projetos notáveis incluem:
