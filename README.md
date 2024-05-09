@@ -1,5 +1,7 @@
 # Chatbot para Entrevistar PDFs Jornalisticante com Gemini-1.0-pro, Embedding-001 e Streamlit
 
+![Logo do Projeto](imagens/chatbot.jpg)
+
 ## Introdução
 
 Este script apresenta um chatbot que utiliza **modelos de linguagem avançados** para entrevistar arquivos PDF com fins jornalísticos. O projeto foi desenvolvido durante a **[Imersão IA 2024](https://www.alura.com.br/imersao-ia-google-gemini)** da Alura e do Google.
