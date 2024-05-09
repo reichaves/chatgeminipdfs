@@ -34,10 +34,6 @@ Tecnologias Utilizadas
     FAISS: Biblioteca para indexação e busca de vetores
     Langchain: Biblioteca Python para construir cadeias de processamento de linguagem natural
 
-Disponibilidade
-
-O código do script está disponível no Github: https://github.com/UjjwalDeepXCIX/Gemini_API_Chatbot_using_streamlit
-
 Observações
 
     O script ainda está em desenvolvimento e pode ser aprimorado com novas funcionalidades e modelos de linguagem.
