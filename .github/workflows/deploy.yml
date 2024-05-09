@@ -12,5 +12,5 @@ jobs:
       run: pip install -r requirements.txt
     - name: Run Streamlit App
       env:
-        GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}  # Use the secret directly as an environment variable
+        GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}  
       run: streamlit run app.py
