@@ -47,3 +47,7 @@ Este script apresenta um chatbot que utiliza **modelos de linguagem avançados**
 - Estudo sobre **[detecção de discurso de ódio](https://github.com/JournalismAI/attackdetector)** com machine learning no antigo Twitter pela iniciativa JournalismAI.
 
 
+
+## Contato
+
+Para mais informações, perguntas ou colaborações, sinta-se à vontade para entrar em contato via e-mail: [reichaves@gmail.com](mailto:reichaves@gmail.com)
