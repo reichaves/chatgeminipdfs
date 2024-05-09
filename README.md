@@ -34,6 +34,15 @@ Este script apresenta um chatbot que utiliza **modelos de linguagem avançados**
 - **FAISS:** Biblioteca para indexação e busca de vetores
 - **Langchain:** Biblioteca Python para construir cadeias de processamento de linguagem natural
 
+## Sobre o Autor
+
+**Reinaldo Chaves** trabalha com jornalismo de dados e investigativo, especializado em temas como transparência pública, dados abertos, meio ambiente e políticas de privacidade de dados. Atualmente, ele está na Associação Brasileira de Jornalismo Investigativo (Abraji) e na Repórter Brasil. Projetos notáveis incluem:
+- **Mapa da Água:** Um projeto finalista nos Sigma Awards de 2023, ligado à Repórter Brasil, envolvendo análise e visualização de dados sobre gestão e qualidade da água no Brasil.
+- **CruzaGrafos:** Associado à Abraji e finalista nos Sigma Awards de 2021, uma ferramenta de jornalismo de dados para investigação de redes e conexões entre pessoas e empresas.
+- Estudo sobre **detecção de discurso de ódio** com machine learning no antigo Twitter pela iniciativa JournalismAI.
+
+[GitHub](https://github.com/reichaves)
+
 ## Observações
 
 - O script ainda está em desenvolvimento e pode ser aprimorado com novas funcionalidades e modelos de linguagem.
