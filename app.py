@@ -1,3 +1,10 @@
+# -*- coding: utf-8
+# Reinaldo Chaves (reichaves@gmail.com)
+# Script de chatbot que usa gemini-1.0-pro, embedding-001 e streamlit para entrevistar jornalisticamente arquivos .PDF
+# Programa é um projeto apresentado na Imersão IA 2024 Alura e Google
+#
+
+# Importar as bibliotecas necessárias
 import streamlit as st
 from PyPDF2 import PdfReader
 import os
@@ -9,30 +16,40 @@ from langchain_community.vectorstores import FAISS
 from langchain.chains.question_answering import load_qa_chain
 from langchain.prompts import PromptTemplate
 from google.generativeai.types.safety_types import HarmBlockThreshold, HarmCategory
+from langchain_community.output_parsers.rail_parser import GuardrailsOutputParser
 
-load_dotenv() 
-genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
+# Carregar variáveis de ambiente
+load_dotenv()
+os.getenv("GOOGLE_API_KEY")
+genai.configure(api_key=os.getenv("GOOGLE_API_KEY")) # Configurar a API de IA generativa do Google
 
+# Função para extrair texto de vários documentos PDF
 def get_pdf_text(pdf_docs):
     text = ""
     for pdf in pdf_docs:
-        pdf_reader = PdfReader(pdf)
-        for page in pdf_reader.pages:
-            text += page.extract_text()
-    return text
+        pdf_reader = PdfReader(pdf) # Inicializar um leitor de PDF para cada documento
+        for page in pdf_reader.pages:  # Iterar em cada página do PDF
+            text += page.extract_text() # Extrai o texto da página e adiciona-o à variável text
+    return text # Retorna o texto concatenado de todos os PDFs
 
+# Função para dividir o texto em partes que são mais fáceis de gerenciar e processar
 def get_text_chunks(text):
+    # Configure o divisor de texto para dividir o texto em partes, cada uma com até 10.000 caracteres, com uma sobreposição de 1.000 caracteres
     text_splitter = RecursiveCharacterTextSplitter(chunk_size=10000, chunk_overlap=1000)
-    chunks = text_splitter.split_text(text)
+    chunks = text_splitter.split_text(text)  # Dividir o texto em partes (chunks)
     return chunks
 
+# Função para criar um armazenamento vetorial a partir de pedaços de texto
 def get_vector_store(text_chunks):
-    embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
-    vector_store = FAISS.from_texts(text_chunks, embedding=embeddings)
-    vector_store.save_local("faiss_index")
+    embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001") # Carrega o modelo de embedding
+    vector_store = FAISS.from_texts(text_chunks, embedding=embeddings) # Criar um armazenamento vetorial FAISS a partir dos blocos de texto
+    vector_store.save_local("faiss_index")  # Salvar o armazenamento de vetores localmente para uso posterior
 
+# Função para criar uma cadeia de respostas de conversação usando um modelo
 def get_conversational_chain():
+    # Instruções detalhadas sobre a operação do chatbot e o formato da resposta
     instructions = """
+    Sempre termine as respostas com "Todas as informações precisam ser checadas com as fontes das informações".
     Você é um assistente para analisar documentos .PDF com um contexto jornalístico. Por exemplo: 
     documentos da Lei nº 12.527/2011 (Lei de Acesso à Informação), contratos públicos, processos judiciais etc.
     Explique os passos de forma simples. Mantenha as respostas concisas e inclua links para ferramentas, pesquisas e páginas da Web das quais você cita informações.
@@ -43,10 +60,10 @@ def get_conversational_chain():
     Antes de começar uma tarefa, respire fundo e execute-a passo a passo.
     Seja claro, breve e ordenado nas respostas. Seja direto e claro.
     Evite opiniões e tente ser neutro.
+    Se baseie nas classes processuais do Direito no Brasil que estão neste site -  https://www.cnj.jus.br/sgt/consulta_publica_classes.php
     Se não souber a resposta diga que não sabe
-    Sempre ressalte que todas as informações precisam ser checadas com as fontes
-
-    Quando analisar documentos de processos judiciais procure priorizar:
+    
+    Quando analisar documentos de processos judiciais procure priorizar nos resumos:
     - Verifique se é uma petição inicial, decisão ou sentença
     - Faça uma apresentação da ação e de suas partes: breve síntese do processo e de seus pólos ativo e passivo, indicando o tipo de processo, advogados e magistrados
     - Motivos que levaram o autor a ajuizar a ação: explicação sucinta do porquê de o autor ter proposto a ação em face do réu
@@ -95,62 +112,83 @@ Alguns exemplos de situações em que a inexigibilidade de licitação pode ser 
     Contratação em caso de emergência: Em situações de urgência ou calamidade pública, a administração pública pode contratar bens, serviços ou obras sem licitação, para garantir o atendimento imediato das necessidades da população.
     Contratação de serviços artísticos ou culturais: A Lei de Licitações e Contratos permite a contratação direta de artistas ou profissionais de cultura, sem a necessidade de licitação, para a realização de obras de arte, espetáculos ou outros eventos culturais.
 
+    Os documentos que trazem respostas de um pedido de acesso à informação pela Lei nº 12.527/2011 (LAI - Lei de Acesso à Informação) normalmente possuem:
+- Nome do órgão público
+- Nomes dos setores do órgão público responsáveis pelas informações
+- Assunto
+- Resumo da demanda
+- Informações complementares
+- Nomes das pessoas responsáveis pela resposta do pedido da LAI
+- Data da resposta
+É importante que a análise dos documentos que citam a LAI feita por este chatbot tragam informações:
+- Data
+- Protocolo NUP
+- Nome do órgão público
+- Nomes das pessoas responsáveis pela resposta do pedido da LAI
+- Data da resposta
+- E demais informações de resumo que demonstrem se o pedido da LAI foi totalmente atendido, parcialmente ou foi negado
+
     """
 
     prompt_template = f"""
     {instructions}
-    Context:\n{{context}}\n
-    Question: \n{{question}}\n
+    Contexto:\n{{context}}\n
+    Questão: \n{{question}}\n
 
-    Answer:
+    Resposta:
     """
-
-    model = ChatGoogleGenerativeAI(model="gemini-pro", 
+    
+    # Carregar o modelo de IA de conversação com as configurações de segurança especificadas
+    model = ChatGoogleGenerativeAI(model="gemini-1.0-pro", 
                                    temperature=0,
                                    safety_settings = {
-                                       HarmCategory.HARM_CATEGORY_UNSPECIFIED: HarmBlockThreshold.BLOCK_NONE,
-                                       HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
+                                       HarmCategory.HARM_CATEGORY_UNSPECIFIED: HarmBlockThreshold.BLOCK_ONLY_HIGH,
+                                       HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT: HarmBlockThreshold.BLOCK_ONLY_HIGH,
                                        HarmCategory.HARM_CATEGORY_HATE_SPEECH: HarmBlockThreshold.BLOCK_ONLY_HIGH,
-                                       HarmCategory.HARM_CATEGORY_HARASSMENT: HarmBlockThreshold.BLOCK_LOW_AND_ABOVE,
-                                       HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT: HarmBlockThreshold.BLOCK_NONE
+                                       HarmCategory.HARM_CATEGORY_HARASSMENT: HarmBlockThreshold.BLOCK_ONLY_HIGH,
+                                       HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT: HarmBlockThreshold.BLOCK_ONLY_HIGH
                                       })
     
-    prompt = PromptTemplate(template=prompt_template, input_variables=["context", "question"])
-    chain = load_qa_chain(model, chain_type="stuff", prompt=prompt)
+    prompt = PromptTemplate(template=prompt_template, input_variables=["context", "question"]) # Configurar o modelo de prompt
+    chain = load_qa_chain(model, chain_type="stuff", prompt=prompt) # Carregue a cadeia de Perguntas e Respostas com o modelo e o prompt
     return chain
 
+# Função para processar a entrada do usuário e gerar respostas
 def user_input(user_question):
-    if 'history' not in st.session_state:
+    if 'history' not in st.session_state: # Inicializar o histórico da sessão, se ainda não estiver presente
         st.session_state.history = []
 
-    embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
-    new_db = FAISS.load_local("faiss_index", embeddings, allow_dangerous_deserialization=True) 
-    docs = new_db.similarity_search(user_question)
-    chain = get_conversational_chain()
+    embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001") # Carrega embeddings
+    new_db = FAISS.load_local("faiss_index", embeddings, allow_dangerous_deserialization=True) # Carregar o index FAISS local
+    docs = new_db.similarity_search(user_question)  # Realizar pesquisa de similaridade com a pergunta do usuário
+    chain = get_conversational_chain() # Obter a cadeia de conversação
 
-    response = chain({"input_documents": docs, "question": user_question}, return_only_outputs=True)
-    st.session_state.history.append({"question": user_question, "answer": response["output_text"]})
+    # Obter a resposta do chatbot
+    response = chain({"input_documents": docs, "question": user_question}, return_only_outputs=True) 
+    st.session_state.history.append({"question": user_question, "answer": response["output_text"]}) # Anexar a interação ao histórico
     
     for interaction in st.session_state.history:
-        st.write(f":robot: {interaction['question']}")
-        st.write(f":bust_in_silhouette: {interaction['answer']}")
+        st.write(f":bust_in_silhouette: {interaction['question']}") # Mostra a questão
+        st.write(f"🤖{interaction['answer']}") # Mostra a resposta
 
+# Função principal para configurar o aplicativo Streamlit
 def main():
-    st.set_page_config(page_title="Chatbot com vários PDFs", page_icon=":books:")
-    st.header("Chatbot com vários PDFs :books:")
-    user_question = st.text_input("Faça perguntas para 'entrevistar' o PDF (por exemplo, processos judicias, contratos públicos, respostas da LAI etc.)")
+    st.set_page_config(page_title="Chatbot com vários PDFs", page_icon=":books:") # Configura a página
+    st.header("Chatbot com vários PDFs :books:") # Configura o header da página
+    user_question = st.text_input("Faça perguntas para 'entrevistar' o PDF (por exemplo, processos judicias, contratos públicos, respostas da LAI etc). Se citar siglas nas perguntas coloque - a sigla e o seu significado. Atenção: Todas as respostas precisam ser checadas!") # Campo de entrada para perguntas
     if user_question:
-        user_input(user_question)
+        user_input(user_question) # Processar a pergunta do usuário, se ela for fornecida
 
-    with st.sidebar:
+    with st.sidebar: # Configura a barra lateral para upload
         st.title("Menu:")
-        pdf_docs = st.file_uploader("Faça o upload de seus arquivos PDF e Clique no botão Processar", accept_multiple_files=True)
-        if st.button("Processar"):
+        pdf_docs = st.file_uploader("Faça o upload (Browse files) de seus arquivos PDF e Clique no botão Processar", accept_multiple_files=True) # Botão de upload
+        if st.button("Processar"): # Processa o botão se pressionado
             with st.spinner("Processando..."):
-                raw_text = get_pdf_text(pdf_docs)
-                text_chunks = get_text_chunks(raw_text)
-                get_vector_store(text_chunks)
-                st.success("Done")
+                raw_text = get_pdf_text(pdf_docs)  # Extrair texto dos PDFs carregados
+                text_chunks = get_text_chunks(raw_text) # Dividir o texto em partes
+                get_vector_store(text_chunks)  # Criar um armazenamento de vetores a partir dos blocos
+                st.success("Done") # Indicar o processamento bem-sucedido
 
+# Começa o programa
 if __name__ == "__main__":
     main()
