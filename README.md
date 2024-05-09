@@ -108,7 +108,10 @@ Siga estes passos para configurar o ambiente e instalar as bibliotecas necessár
 4. **Executando o Aplicativo**
     ```bash
    streamlit run app.py
-    Isso iniciará o servidor do Streamlit e abrirá automaticamente uma janela no navegador padrão apontando para o endereço local (geralmente http://localhost:8501), onde o app pode ser visualizado e interagido
+    Isso iniciará o servidor do Streamlit e abrirá automaticamente
+    uma janela no navegador padrão apontando para o endereço
+    local (geralmente http://localhost:8501), onde o app
+    pode ser visualizado e interagido
    
 
    
