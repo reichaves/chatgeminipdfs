@@ -10,6 +10,7 @@ Este script apresenta um chatbot que utiliza **modelos de linguagem avançados**
 - **Contexto Jornalístico:** O chatbot é treinado com um conjunto de instruções e informações específicas para o contexto jornalístico, garantindo respostas relevantes e precisas.
 - **Respostas Abrangentes:** O chatbot fornece resumos abrangentes dos documentos, incluindo informações sobre o tipo de documento, partes envolvidas, principais argumentos e resultados.
 - **Segurança e Neutralidade:** O chatbot é configurado com medidas de segurança para evitar a geração de conteúdo prejudicial e garantir a neutralidade nas respostas.
+- **Para fins jornalísticos** o modelo Gemini-1.0-pro é utilizado com a temperatura zero porque é a mais indicada para o jornalismo profissional. Temperature = 0 significa que o modelo vai se concentrar em gerar respostas que sejam as mais prováveis ou logicamente corretas com base no texto de entrada. Isso resulta em respostas mais factuais e  determinísticas, mas que podem parecer um pouco mecânicas ou previsíveis.
 
 ## Como Funciona
 
@@ -38,6 +39,44 @@ Este script apresenta um chatbot que utiliza **modelos de linguagem avançados**
 
 - O script ainda está em desenvolvimento e pode ser aprimorado com novas funcionalidades e modelos de linguagem.
 - É importante lembrar que as respostas do chatbot devem ser sempre verificadas com as fontes originais de informação.
+
+
+## Orientação extra
+- O script app.py utiliza no prompt inicial do chatbot dezenas de orientações de segurança, qualidade, confiabilidade e de orientação de trabalho
+- Mas as perguntas feitas pelos usuários e usuárias agora deste chatbot também devem ser as mais detalhadas possíveis para ter melhores resultados
+- Ao trabalhar com modelos de linguagem avançados como o Gemini-1.0-pro, a qualidade dos prompts que você fornece é crucial para obter resultados satisfatórios. Prompts detalhados e informativos servem como um guia essencial para o modelo, direcionando-o na direção correta e permitindo que ele utilize todo seu potencial
+- Maior Precisão e Relevância: Ao fornecer mais contexto e instruções ao modelo, você aumenta as chances de obter respostas precisas e relevantes ao tópico em questão. Isso porque o modelo tem mais informações para se basear e pode tomar decisões mais conscientes sobre como gerar o texto
+- Melhor Compreensão do Objetivo: Prompts detalhados ajudam o modelo a entender melhor o que você espera dele. Isso significa que o modelo poderá gerar respostas mais alinhadas com suas expectativas e necessidades específicas
+- Redução da Ambiguidade: Instruções claras e concisas minimizam a ambiguidade e garantem que o modelo não interprete mal suas intenções. Isso evita respostas irrelevantes ou sem sentido
+- Controle Criativo Aprimorado: Em tarefas que exigem criatividade, como escrever histórias ou poemas, prompts detalhados podem ser usados para direcionar a criatividade do modelo de acordo com suas preferências. Você pode fornecer detalhes sobre o estilo, o tema, o tom e outros elementos desejados
+- Melhor Aproveitamento dos Recursos do Modelo: Ao fornecer mais informações ao modelo, você o ajuda a utilizar seus recursos de forma mais eficiente. Isso pode resultar em respostas mais rápidas e com melhor qualidade
+
+## Dicas para Criar Prompts Detalhados
+    Seja específico: Descreva o que você deseja que o modelo faça com o máximo de detalhes possível.
+    Forneça contexto: Inclua informações relevantes sobre o tópico em questão, como histórico, fatos importantes ou definições de termos técnicos.
+    Use exemplos: Se possível, forneça exemplos de como você gostaria que o modelo respondesse. Isso ajudará o modelo a entender suas expectativas.
+    Seja claro e conciso: Evite linguagem ambígua ou frases longas e complexas.
+    Adapte à tarefa: Ajuste o nível de detalhamento do prompt de acordo com a tarefa específica que você está realizando.
+
+Lembre-se:
+
+    Prompts detalhados são um investimento que vale a pena, pois permitem que você obtenha melhores resultados do seu modelo de linguagem.
+    Com um pouco de esforço e planejamento, você pode criar prompts que guiem o modelo na direção certa e o ajudem a alcançar todo seu potencial.
+
+Exemplos de prompts detalhados:
+
+Tarefa: Resumir um artigo de notícias sobre um novo estudo científico.
+
+Prompt ruim: "Resumir este artigo."
+
+Prompt bom: "Resumir este artigo de notícias sobre um novo estudo científico, focando nos principais resultados e conclusões do estudo. Mencionar os autores do estudo e o nome da revista científica em que foi publicado. Usar linguagem clara e concisa, adequada para um público geral."
+
+Tarefa: Escrever um poema sobre o amor.
+
+Prompt ruim: "Escrever um poema."
+
+Prompt bom: "Escrever um poema sobre o amor, utilizando metáforas e imagens vívidas para expressar os sentimentos de amor e paixão. O poema deve ter no mínimo 10 versos e seguir um esquema de rimas ABAB CDCD EFEF. Usar linguagem poética e evocativa."
+
 
 ## Sobre o Autor
 
