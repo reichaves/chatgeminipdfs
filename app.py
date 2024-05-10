@@ -141,6 +141,7 @@ Alguns exemplos de situações em que a inexigibilidade de licitação pode ser 
     # Carregar o modelo de IA de conversação com as configurações de segurança especificadas
     model = ChatGoogleGenerativeAI(model="gemini-1.0-pro", 
                                    temperature=0,
+                                   candidate_count=1,
                                    safety_settings = {
                                        HarmCategory.HARM_CATEGORY_UNSPECIFIED: HarmBlockThreshold.BLOCK_ONLY_HIGH,
                                        HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT: HarmBlockThreshold.BLOCK_ONLY_HIGH,
