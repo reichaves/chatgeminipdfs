@@ -5,7 +5,7 @@
 
 ## Introdução
 
-Este script apresenta um chatbot que utiliza **modelos de linguagem avançados** para entrevistar arquivos PDF com fins jornalísticos. O projeto foi desenvolvido durante a **[Imersão IA 2024](https://www.alura.com.br/imersao-ia-google-gemini)** da Alura e do Google.
+Este script apresenta um chatbot que utiliza **modelos de linguagem avançados** para entrevistar arquivos PDF com fins jornalísticos. O projeto foi desenvolvido durante a **[Imersão IA 2024](https://www.alura.com.br/imersao-ia-google-gemini)** da Alura e do Google. **[Veja vídeo explicativo](https://www.youtube.com/watch?v=8UFwilLD8DM)**
 
 ## Funcionalidades
 
