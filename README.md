@@ -1,4 +1,5 @@
-# Chatbot para Entrevistar PDFs Jornalisticante com Gemini-1.0-pro, Embedding-001 e Streamlit
+# Minerador de PDFs :unlock:
+## Chatbot para Entrevistar PDFs Jornalisticante com Gemini-1.0-pro, Embedding-001 e Streamlit
 
 ![Logo do Projeto](imagens/chatbot.jpg)
 
