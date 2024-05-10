@@ -35,7 +35,7 @@ Este script apresenta um chatbot que utiliza **modelos de linguagem avançados**
 - **Streamlit:** Biblioteca Python para criar interfaces web interativas
 - **PyPDF2:** Biblioteca Python para trabalhar com arquivos PDF
 - **FAISS:** Biblioteca para indexação e busca de vetores
-- **Langchain:** Biblioteca Python para construir cadeias de processamento de linguagem natural
+- **Langchain:** Biblioteca Python para construir cadeias de processamento de linguagem natural. Facilita a construção de aplicações de linguagem assistida por IA. Ela oferece ferramentas para integrar modelos de linguagem, como o GPT e Gemini, em aplicações mais amplas, permitindo que desenvolvedores e pesquisadores criem sistemas complexos de assistentes de linguagem. A biblioteca inclui recursos para gerenciamento de estado, lógica de conversação, e integração com outras APIs e dados externos, tornando-a bastante útil para projetos de pesquisa e desenvolvimento em IA e linguagem natural
 
 ## Observações
 
