@@ -17,6 +17,7 @@ from langchain.chains.question_answering import load_qa_chain
 from langchain.prompts import PromptTemplate
 from google.generativeai.types.safety_types import HarmBlockThreshold, HarmCategory
 from langchain_community.output_parsers.rail_parser import GuardrailsOutputParser
+import asyncio
 
 # Carregar variáveis de ambiente
 load_dotenv()
@@ -174,6 +175,14 @@ def user_input(user_question):
 
 # Função principal para configurar o aplicativo Streamlit
 def main():
+    try:
+        # Try to get the existing event loop
+        loop = asyncio.get_event_loop()
+    except RuntimeError as e:
+        # If no event loop is available in the current context, create a new one
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        
     st.set_page_config(page_title="Chatbot com vários PDFs", page_icon=":books:") # Configura a página
     st.header("Chatbot com vários PDFs :books:") # Configura o header da página
     user_question = st.text_input("Faça perguntas para 'entrevistar' o PDF (por exemplo, processos judicias, contratos públicos, respostas da LAI etc). Se citar siglas nas perguntas coloque - a sigla e o seu significado. Atenção: Todas as respostas precisam ser checadas!") # Campo de entrada para perguntas
