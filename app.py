@@ -179,7 +179,7 @@ def main():
     st.sidebar.info(
         "Este aplicativo foi desenvolvido por Reinaldo Chaves. "
         "Para mais informações, contribuições e feedback, visite o repositório do projeto: "
-        "[GitHub](https://github.com/reichaves/nome_do_repositorio)."
+        "[GitHub](https://github.com/reichaves/chatgeminipdfs)."
     )
     
     try:
