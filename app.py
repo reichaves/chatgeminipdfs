@@ -175,19 +175,6 @@ def user_input(user_question):
 
 # Função principal para configurar o aplicativo Streamlit
 def main():
-    st.set_page_config(page_title="Chatbot com vários PDFs", page_icon=":books:") # Configura a página
-    st.header("Chatbot com vários PDFs :books:") # Configura o header da página
-    user_question = st.text_input("Faça perguntas para 'entrevistar' o PDF (por exemplo, processos judicias, contratos públicos, respostas da LAI etc). Se citar siglas nas perguntas coloque - a sigla e o seu significado. Atenção: Todas as respostas precisam ser checadas!") # Campo de entrada para perguntas
-    if user_question:
-        user_input(user_question) # Processar a pergunta do usuário, se ela for fornecida
-        
-    st.sidebar.title("Sobre este app")
-    st.sidebar.info(
-        "Este aplicativo foi desenvolvido por Reinaldo Chaves. "
-        "Para mais informações, contribuições e feedback, visite o repositório do projeto: "
-        "[GitHub](https://github.com/reichaves/chatgeminipdfs)."
-    )
-    
     try:
         # Try to get the existing event loop
         loop = asyncio.get_event_loop()
@@ -195,7 +182,13 @@ def main():
         # If no event loop is available in the current context, create a new one
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
-
+        
+    st.set_page_config(page_title="Chatbot com vários PDFs", page_icon=":books:") # Configura a página
+    st.header("Chatbot com vários PDFs :books:") # Configura o header da página
+    user_question = st.text_input("Faça perguntas para 'entrevistar' o PDF (por exemplo, processos judicias, contratos públicos, respostas da LAI etc). Se citar siglas nas perguntas coloque - a sigla e o seu significado. Atenção: Todas as respostas precisam ser checadas!") # Campo de entrada para perguntas
+    if user_question:
+        user_input(user_question) # Processar a pergunta do usuário, se ela for fornecida
+        
     with st.sidebar: # Configura a barra lateral para upload
         st.title("Menu:")
         pdf_docs = st.file_uploader("Faça o upload (Browse files) de seus arquivos PDF e Clique no botão Processar", accept_multiple_files=True) # Botão de upload
@@ -205,7 +198,14 @@ def main():
                 text_chunks = get_text_chunks(raw_text) # Dividir o texto em partes
                 get_vector_store(text_chunks)  # Criar um armazenamento de vetores a partir dos blocos
                 st.success("Done") # Indicar o processamento bem-sucedido
-
+    
+    st.sidebar.title("Sobre este app")
+    st.sidebar.info(
+        "Este aplicativo foi desenvolvido por Reinaldo Chaves. "
+        "Para mais informações, contribuições e feedback, visite o repositório do projeto: "
+        "[GitHub](https://github.com/reichaves/chatgeminipdfs)."
+    )
+    
 # Começa o programa
 if __name__ == "__main__":
     main()
