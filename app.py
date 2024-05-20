@@ -24,23 +24,6 @@ load_dotenv()
 os.getenv("GOOGLE_API_KEY")
 genai.configure(api_key=os.getenv("GOOGLE_API_KEY")) # Configurar a API de IA generativa do Google
 
-def show_about():
-    st.write("""
-        ## Sobre Este Aplicativo
-
-        Este aplicativo permite analisar documentos PDF para extrair e processar informações de forma interativa.
-
-        ### Autor
-        **Reinaldo Chaves**
-        
-        ### Contato
-        - Email: [reichaves@gmail.com](mailto:reichaves@gmail.com)
-        - GitHub: [Visite o repositório](https://github.com/reichaves/nome_do_repositorio)
-
-        ### Como Contribuir
-        Este projeto é open-source e contribuições são bem-vindas. Para contribuir, por favor siga as instruções no repositório do GitHub.
-    """)
-
 # Função para extrair texto de vários documentos PDF
 def get_pdf_text(pdf_docs):
     text = ""
@@ -192,6 +175,13 @@ def user_input(user_question):
 
 # Função principal para configurar o aplicativo Streamlit
 def main():
+    st.sidebar.title("Sobre este app")
+    st.sidebar.info(
+        "Este aplicativo foi desenvolvido por Reinaldo Chaves. "
+        "Para mais informações, contribuições e feedback, visite o repositório do projeto: "
+        "[GitHub](https://github.com/reichaves/nome_do_repositorio)."
+    )
+    
     try:
         # Try to get the existing event loop
         loop = asyncio.get_event_loop()
@@ -219,5 +209,3 @@ def main():
 # Começa o programa
 if __name__ == "__main__":
     main()
-    if st.sidebar.button("Sobre"):
-        show_about()
