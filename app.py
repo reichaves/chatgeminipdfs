@@ -184,23 +184,27 @@ def user_input(user_question):
 
 # Função principal para configurar o aplicativo Streamlit
 def main():
+    # Limpeza de estado da sessão ao recarregar deve ser chamada imediatamente
     clear_state_on_reload()
+      
+    st.set_page_config(page_title="Chatbot com vários PDFs", page_icon=":books:") # Configura a página
+
+    if st.button('Limpar sessão se desejar'):
+        st.session_state.clear()
+
+    # Inicia um loop de eventos se necessário para operações assíncronas
+    try:
+        loop = asyncio.get_event_loop()
+    except RuntimeError:
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+    
+    st.header("Chatbot com vários PDFs :books:") # Configura o header da página
+    user_question = st.text_input("Faça perguntas para 'entrevistar' o PDF (por exemplo, processos judicias, contratos públicos, respostas da LAI etc). Se citar siglas nas perguntas coloque - a sigla e o seu significado. Atenção: Todas as respostas precisam ser checadas!") # Campo de entrada para perguntas
 
     if st.button('Limpar sessão se desejar'):
         st.session_state.clear()
     
-    # Se o seu aplicativo depender de operações assíncronas, você deverá garantir que um loop de eventos esteja em execução
-    try:
-        # Tentar obter o loop de eventos existente
-        loop = asyncio.get_event_loop()
-    except RuntimeError as e:
-        # Se nenhum loop de evento estiver disponível no contexto atual, crie um novo
-        loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(loop)
-        
-    st.set_page_config(page_title="Chatbot com vários PDFs", page_icon=":books:") # Configura a página
-    st.header("Chatbot com vários PDFs :books:") # Configura o header da página
-    user_question = st.text_input("Faça perguntas para 'entrevistar' o PDF (por exemplo, processos judicias, contratos públicos, respostas da LAI etc). Se citar siglas nas perguntas coloque - a sigla e o seu significado. Atenção: Todas as respostas precisam ser checadas!") # Campo de entrada para perguntas
     if user_question:
         user_input(user_question) # Processar a pergunta do usuário, se ela for fornecida
         
