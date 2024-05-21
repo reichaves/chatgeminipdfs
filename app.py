@@ -194,13 +194,7 @@ def main():
     # Subheader condicional que avisa sobre a necessidade de processar documentos antes do chat
     if not st.session_state['docs_processed']:
         st.subheader("Por favor, faça o upload e processe os documentos PDF para ativar o chat.")
-    
-    # Input para perguntas só é ativado se documentos foram processados
-    if st.session_state['docs_processed']:
-        user_question = st.text_input("Faça perguntas para 'entrevistar' o PDF (por exemplo, processos judiciais, contratos públicos, respostas da LAI etc). Se citar siglas nas perguntas coloque - a sigla e o seu significado. Atenção: Todas as respostas precisam ser checadas!")
-        if user_question:
-            user_input(user_question)  # Processa a pergunta do usuário
-        
+           
     with st.sidebar: # Configura a barra lateral para upload
         st.title("Menu:")
         st.markdown("""
@@ -211,14 +205,23 @@ def main():
             - Se encontrar erros de processamento, reinicie com F5.
             """)
         
-        pdf_docs = st.file_uploader("", accept_multiple_files=True) 
-              
-        if st.button("Processar", key='process'): # Processa o botão se pressionado
-            with st.spinner("Processando..."):
-                raw_text = get_pdf_text(pdf_docs)  # Extrair texto dos PDFs carregados
-                text_chunks = get_text_chunks(raw_text) # Dividir o texto em partes
-                get_vector_store(text_chunks)  # Criar um armazenamento de vetores a partir dos blocos
-                st.success("Done") # Indicar o processamento bem-sucedido
+        pdf_docs = st.file_uploader("", accept_multiple_files=True, key="pdf_uploader")
+        if st.button("Processar", key='process'):
+            if pdf_docs:
+                with st.spinner("Processando..."):
+                    raw_text = get_pdf_text(pdf_docs)
+                    text_chunks = get_text_chunks(raw_text)
+                    get_vector_store(text_chunks)
+                    st.success("Done")
+                    st.session_state['docs_processed'] = True  # Atualiza a flag para verdadeiro após o processamento
+            else:
+                st.error("Por favor, faça o upload de pelo menos um arquivo PDF antes de processar.")
+
+        # Input para perguntas só é ativado se documentos foram processados
+        if st.session_state['docs_processed']:
+            user_question = st.text_input("Faça perguntas para 'entrevistar' o PDF (por exemplo, processos judiciais, contratos públicos, respostas da LAI etc). Se citar siglas nas perguntas coloque - a sigla e o seu significado. Atenção: Todas as respostas precisam ser checadas!")
+            if user_question:
+                user_input(user_question)  # Processa a pergunta do usuário
                 
         st.warning(
             """
