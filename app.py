@@ -201,10 +201,7 @@ def main():
     
     st.header("Chatbot com vários PDFs :books:") # Configura o header da página
     user_question = st.text_input("Faça perguntas para 'entrevistar' o PDF (por exemplo, processos judicias, contratos públicos, respostas da LAI etc). Se citar siglas nas perguntas coloque - a sigla e o seu significado. Atenção: Todas as respostas precisam ser checadas!") # Campo de entrada para perguntas
-
-    if st.button('Limpar sessão se desejar'):
-        st.session_state.clear()
-    
+  
     if user_question:
         user_input(user_question) # Processar a pergunta do usuário, se ela for fornecida
         
