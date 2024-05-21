@@ -216,13 +216,7 @@ def main():
                     st.session_state['docs_processed'] = True  # Atualiza a flag para verdadeiro após o processamento
             else:
                 st.error("Por favor, faça o upload de pelo menos um arquivo PDF antes de processar.")
-
-    # Input para perguntas só é ativado se documentos foram processados
-    if st.session_state['docs_processed']:
-        user_question = st.text_input("Faça perguntas para 'entrevistar' o PDF (por exemplo, processos judiciais, contratos públicos, respostas da LAI etc). Se citar siglas nas perguntas coloque - a sigla e o seu significado. Atenção: Todas as respostas precisam ser checadas!")
-        if user_question:
-            user_input(user_question)  # Processa a pergunta do usuário
-                
+             
         st.warning(
             """
             Atenção: Os documentos que você compartilhar com o modelo de IA generativa podem ser usados pelo Gemini para treinar o sistema. Portanto, evite compartilhar documentos PDF que contenham:
@@ -236,7 +230,13 @@ def main():
             Este projeto não se responsabiliza pelos conteúdos criados a partir deste site.
             """
             )
-    
+        
+    # Input para perguntas só é ativado se documentos foram processados
+    if st.session_state['docs_processed']:
+        user_question = st.text_input("Faça perguntas para 'entrevistar' o PDF (por exemplo, processos judiciais, contratos públicos, respostas da LAI etc). Se citar siglas nas perguntas coloque - a sigla e o seu significado. Atenção: Todas as respostas precisam ser checadas!")
+        if user_question:
+            user_input(user_question)  # Processa a pergunta do usuário
+            
     st.sidebar.title("Sobre este app")
     st.sidebar.info(
         "Este aplicativo foi desenvolvido por Reinaldo Chaves. "
