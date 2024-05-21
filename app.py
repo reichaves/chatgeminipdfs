@@ -25,18 +25,6 @@ os.getenv("GOOGLE_API_KEY")
 genai.configure(api_key=os.getenv("GOOGLE_API_KEY")) # Configurar a API de IA generativa do Google
 
 
-# Limpar o estado da Sessão ao Recarregar
-def clear_state_on_reload():
-    '''if 'already_visited' not in st.session_state:
-        # Limpa todos os estados anteriores se for a primeira carga da página
-        for key in list(st.session_state.keys()):
-            del st.session_state[key]
-        st.session_state['already_visited'] = True
-        '''
-    st.session_state.clear()  # Limpa todo o estado da sessão atual
-    st.runtime.legacy_caching.clear_cache()
-    st.cache_data.clear()
-
 # Função para extrair texto de vários documentos PDF
 def get_pdf_text(pdf_docs):
     text = ""
@@ -190,12 +178,6 @@ def user_input(user_question):
 def main():   
     st.set_page_config(page_title="Chatbot com vários PDFs", page_icon=":books:") # Configura a página
 
-    # Limpeza de estado da sessão ao recarregar deve ser chamada imediatamente
-    clear_state_on_reload()
-
-    if st.button('Limpar sessão se desejar', key='clear1'):
-        st.session_state.clear()
-
     # Inicia um loop de eventos se necessário para operações assíncronas
     try:
         loop = asyncio.get_event_loop()
@@ -252,4 +234,8 @@ def main():
     
 # Começa o programa
 if __name__ == "__main__":
+    st.session_state.clear()  # Limpa todo o estado da sessão atual
+    st.runtime.legacy_caching.clear_cache()
+    st.cache_data.clear()
+
     main()
