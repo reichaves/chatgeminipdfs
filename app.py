@@ -27,11 +27,13 @@ genai.configure(api_key=os.getenv("GOOGLE_API_KEY")) # Configurar a API de IA ge
 
 # Limpar o estado da Sessão ao Recarregar
 def clear_state_on_reload():
-    if 'already_visited' not in st.session_state:
+    '''if 'already_visited' not in st.session_state:
         # Limpa todos os estados anteriores se for a primeira carga da página
         for key in list(st.session_state.keys()):
             del st.session_state[key]
         st.session_state['already_visited'] = True
+        '''
+    st.session_state.clear()  # Limpa todo o estado da sessão atual
 
 # Função para extrair texto de vários documentos PDF
 def get_pdf_text(pdf_docs):
@@ -183,11 +185,11 @@ def user_input(user_question):
         st.write(f"🤖{interaction['answer']}") # Mostra a resposta
 
 # Função principal para configurar o aplicativo Streamlit
-def main():
+def main():   
+    st.set_page_config(page_title="Chatbot com vários PDFs", page_icon=":books:") # Configura a página
+
     # Limpeza de estado da sessão ao recarregar deve ser chamada imediatamente
     clear_state_on_reload()
-      
-    st.set_page_config(page_title="Chatbot com vários PDFs", page_icon=":books:") # Configura a página
 
     if st.button('Limpar sessão se desejar', key='clear1'):
         st.session_state.clear()
