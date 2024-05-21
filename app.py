@@ -234,8 +234,4 @@ def main():
     
 # Começa o programa
 if __name__ == "__main__":
-    st.session_state.clear()  # Limpa todo o estado da sessão atual
-    st.runtime.legacy_caching.clear_cache()
-    st.cache_data.clear()
-
     main()
