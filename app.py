@@ -192,7 +192,7 @@ def main():
         
     with st.sidebar: # Configura a barra lateral para upload
         st.title("Menu:")
-        pdf_docs = st.file_uploader("ANTES DE ESCREVER PERGUNTAS - A - Faça o upload (Browse files) de seus arquivos PDF e B - Clique no botão Processar", accept_multiple_files=True) # Botão de upload
+        pdf_docs = st.file_uploader("ANTES DE ESCREVER PERGUNTAS - A) Faça o upload (Browse files) de seus arquivos PDF e B) Clique no botão Processar", accept_multiple_files=True) # Botão de upload
 
               
         if st.button("Processar"): # Processa o botão se pressionado
