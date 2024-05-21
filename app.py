@@ -35,6 +35,7 @@ def clear_state_on_reload():
         '''
     st.session_state.clear()  # Limpa todo o estado da sessão atual
     st.runtime.legacy_caching.clear_cache()
+    st.cache_data.clear()
 
 # Função para extrair texto de vários documentos PDF
 def get_pdf_text(pdf_docs):
