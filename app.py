@@ -218,7 +218,7 @@ def main():
             4. Informações de propriedade intelectual
             5. Conteúdos autorais
 
-            E não use IA para escrever um texto inteiro! O auxílio é melhor para gerar resumos, filtrar informações ou auxiliar a entender contextos - que depois devem ser checados. Inteligência Artificial comete erros!
+            E não use IA para escrever um texto inteiro! O auxílio é melhor para gerar resumos, filtrar informações ou auxiliar a entender contextos - que depois devem ser checados. Inteligência Artificial comete erros! (são apenas modelos estatísticos que tentam prever a próxima palavra mais provável e assim criam uma resposta)
             Este projeto não se responsabiliza pelos conteúdos criados a partir deste site.
             """
             )
