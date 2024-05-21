@@ -189,7 +189,7 @@ def main():
       
     st.set_page_config(page_title="Chatbot com vários PDFs", page_icon=":books:") # Configura a página
 
-    if st.button('Limpar sessão se desejar'):
+    if st.button('Limpar sessão se desejar', key='clear1'):
         st.session_state.clear()
 
     # Inicia um loop de eventos se necessário para operações assíncronas
@@ -220,7 +220,7 @@ def main():
         
         pdf_docs = st.file_uploader("", accept_multiple_files=True) 
               
-        if st.button("Processar"): # Processa o botão se pressionado
+        if st.button("Processar", key='process'): # Processa o botão se pressionado
             with st.spinner("Processando..."):
                 raw_text = get_pdf_text(pdf_docs)  # Extrair texto dos PDFs carregados
                 text_chunks = get_text_chunks(raw_text) # Dividir o texto em partes
