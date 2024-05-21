@@ -24,6 +24,15 @@ load_dotenv()
 os.getenv("GOOGLE_API_KEY")
 genai.configure(api_key=os.getenv("GOOGLE_API_KEY")) # Configurar a API de IA generativa do Google
 
+
+# Limpar o estado da Sessão ao Recarregar
+def clear_state_on_reload():
+    if 'already_visited' not in st.session_state:
+        # Limpa todos os estados anteriores se for a primeira carga da página
+        for key in list(st.session_state.keys()):
+            del st.session_state[key]
+        st.session_state['already_visited'] = True
+
 # Função para extrair texto de vários documentos PDF
 def get_pdf_text(pdf_docs):
     text = ""
@@ -175,6 +184,8 @@ def user_input(user_question):
 
 # Função principal para configurar o aplicativo Streamlit
 def main():
+    clear_state_on_reload()
+    
     # Se o seu aplicativo depender de operações assíncronas, você deverá garantir que um loop de eventos esteja em execução
     try:
         # Tentar obter o loop de eventos existente
