@@ -7,7 +7,7 @@
 
 Este script apresenta um chatbot que utiliza **modelos de linguagem avançados** para entrevistar arquivos PDF com fins jornalísticos. O projeto foi desenvolvido durante a **[Imersão IA 2024](https://www.alura.com.br/imersao-ia-google-gemini)** da Alura e do Google. **[Veja vídeo explicativo](https://www.youtube.com/watch?v=8UFwilLD8DM)**
 
-VERSÃO ON-LINE - VEJA O SITE *[AQUI](https://chatbotdepdfs.streamlit.app/)**
+VERSÃO ON-LINE - VEJA O SITE **[AQUI](https://chatbotdepdfs.streamlit.app/)**
 
 Veja como pegar uma API Key do Gemini aqui **[aqui](https://ai.google.dev/gemini-api/docs/api-key?hl=pt-br)**
 
