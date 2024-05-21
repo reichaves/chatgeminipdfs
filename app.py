@@ -184,12 +184,18 @@ def main():
     except RuntimeError:
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
+
+    # Inicializando ou resetando a flag de documentos processados
+    if 'docs_processed' not in st.session_state:
+        st.session_state['docs_processed'] = False
     
     st.header("Chatbot com vários PDFs :books:") # Configura o header da página
-    user_question = st.text_input("Faça perguntas para 'entrevistar' o PDF (por exemplo, processos judicias, contratos públicos, respostas da LAI etc). Se citar siglas nas perguntas coloque - a sigla e o seu significado. Atenção: Todas as respostas precisam ser checadas!") # Campo de entrada para perguntas
-  
-    if user_question:
-        user_input(user_question) # Processar a pergunta do usuário, se ela for fornecida
+    
+    # Input para perguntas só é ativado se documentos foram processados
+    if st.session_state['docs_processed']:
+        user_question = st.text_input("Faça perguntas para 'entrevistar' o PDF (por exemplo, processos judiciais, contratos públicos, respostas da LAI etc). Se citar siglas nas perguntas coloque - a sigla e o seu significado. Atenção: Todas as respostas precisam ser checadas!")
+        if user_question:
+            user_input(user_question)  # Processa a pergunta do usuário
         
     with st.sidebar: # Configura a barra lateral para upload
         st.title("Menu:")
