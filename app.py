@@ -18,7 +18,6 @@ from langchain.prompts import PromptTemplate
 from google.generativeai.types.safety_types import HarmBlockThreshold, HarmCategory
 from langchain_community.output_parsers.rail_parser import GuardrailsOutputParser
 import asyncio
-from streamlit import caching
 
 # Carregar variáveis de ambiente
 load_dotenv()
@@ -35,7 +34,6 @@ def clear_state_on_reload():
         st.session_state['already_visited'] = True
         '''
     st.session_state.clear()  # Limpa todo o estado da sessão atual
-    caching.clear_cache()
     st.cache_data.clear()
     st.cache_resource.clear()
 
