@@ -190,6 +190,10 @@ def main():
         st.session_state['docs_processed'] = False
     
     st.header("Chatbot com vários PDFs :books:") # Configura o header da página
+
+    # Subheader condicional que avisa sobre a necessidade de processar documentos antes do chat
+    if not st.session_state['docs_processed']:
+        st.subheader("Por favor, faça o upload e processe os documentos PDF para ativar o chat.")
     
     # Input para perguntas só é ativado se documentos foram processados
     if st.session_state['docs_processed']:
