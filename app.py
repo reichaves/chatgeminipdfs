@@ -193,7 +193,6 @@ def main():
         st.title("Menu:")
         pdf_docs = st.file_uploader("Faça o upload (Browse files) de seus arquivos PDF e Clique no botão Processar", accept_multiple_files=True) # Botão de upload
 
-        with st.sidebar:
         st.warning(
             """
             Atenção: Os documentos que você compartilhar com o modelo de IA generativa podem ser usados pelo Gemini para treinar o sistema. Portanto, evite compartilhar documentos PDF que contenham:
