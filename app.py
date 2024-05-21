@@ -175,11 +175,12 @@ def user_input(user_question):
 
 # Função principal para configurar o aplicativo Streamlit
 def main():
+    # Se o seu aplicativo depender de operações assíncronas, você deverá garantir que um loop de eventos esteja em execução
     try:
-        # Try to get the existing event loop
+        # Tentar obter o loop de eventos existente
         loop = asyncio.get_event_loop()
     except RuntimeError as e:
-        # If no event loop is available in the current context, create a new one
+        # Se nenhum loop de evento estiver disponível no contexto atual, crie um novo
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
         
