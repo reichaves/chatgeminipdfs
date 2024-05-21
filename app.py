@@ -192,8 +192,15 @@ def main():
         
     with st.sidebar: # Configura a barra lateral para upload
         st.title("Menu:")
-        pdf_docs = st.file_uploader("ANTES DE ESCREVER PERGUNTAS - A) Faça o upload (Browse files) de seus arquivos PDF (pode demorar alguns minutos), B) Clique no botão Processar, e C) Aguarde a mensagem 'Done'. <br> Se encontrar erros de processamento reinicie com F5", accept_multiple_files=True) # Botão de upload
-
+        st.markdown("""
+            **ANTES DE ESCREVER PERGUNTAS:**
+            - **A)** Faça o upload (Browse files) de seus arquivos PDF (pode demorar alguns minutos).
+            - **B)** Clique no botão Processar, 
+            - **C)** Aguarde a mensagem 'Done'.
+            - Se encontrar erros de processamento, reinicie com F5.
+            """)
+        
+        pdf_docs = st.file_uploader("", accept_multiple_files=True) 
               
         if st.button("Processar"): # Processa o botão se pressionado
             with st.spinner("Processando..."):
