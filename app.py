@@ -185,6 +185,9 @@ def user_input(user_question):
 # Função principal para configurar o aplicativo Streamlit
 def main():
     clear_state_on_reload()
+
+    if st.button('Limpar sessão se desejar'):
+        st.session_state.clear()
     
     # Se o seu aplicativo depender de operações assíncronas, você deverá garantir que um loop de eventos esteja em execução
     try:
