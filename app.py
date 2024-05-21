@@ -200,15 +200,8 @@ def main():
                 text_chunks = get_text_chunks(raw_text) # Dividir o texto em partes
                 get_vector_store(text_chunks)  # Criar um armazenamento de vetores a partir dos blocos
                 st.success("Done") # Indicar o processamento bem-sucedido
-    
-    st.sidebar.title("Sobre este app")
-    st.sidebar.info(
-        "Este aplicativo foi desenvolvido por Reinaldo Chaves. "
-        "Para mais informações, contribuições e feedback, visite o repositório do projeto: "
-        "[GitHub](https://github.com/reichaves/chatgeminipdfs)."
-    )
-
-    st.warning(
+                
+        st.warning(
             """
             Atenção: Os documentos que você compartilhar com o modelo de IA generativa podem ser usados pelo Gemini para treinar o sistema. Portanto, evite compartilhar documentos PDF que contenham:
             1. Dados bancários e financeiros
@@ -221,6 +214,14 @@ def main():
             Este projeto não se responsabiliza pelos conteúdos criados a partir deste site.
             """
             )
+    
+    st.sidebar.title("Sobre este app")
+    st.sidebar.info(
+        "Este aplicativo foi desenvolvido por Reinaldo Chaves. "
+        "Para mais informações, contribuições e feedback, visite o repositório do projeto: "
+        "[GitHub](https://github.com/reichaves/chatgeminipdfs)."
+    )
+
     
 # Começa o programa
 if __name__ == "__main__":
