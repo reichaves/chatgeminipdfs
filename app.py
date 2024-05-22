@@ -184,14 +184,30 @@ def main():
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
 
-    api_key = st.text_input("Digite sua API Key do Gemini:", type="password", key="api_key_input")
-    
-    st.markdown(
-    f'<p style="font-size:18px;">Veja como obter uma API Key neste <a href="https://ai.google.dev/gemini-api/docs/api-key?hl=pt-br">site</a>!</p>',
-    unsafe_allow_html=True)
-    genai.configure(api_key=api_key)
+    # Campo para inserir a API Key do Gemini
+    if "api_key" not in st.session_state:
+        st.session_state.api_key = ""
+    if "uploaded_pdfs" not in st.session_state:
+        st.session_state.uploaded_pdfs = []
 
-    if api_key:
+    if not st.session_state.api_key:
+        st.write("Digite sua API Key do Gemini")
+        api_key = st.text_input("API Key do Gemini", type="password")
+        st.markdown(
+            f'<p style="font-size:18px;">Veja como obter uma API Key neste <a href="https://ai.google.dev/gemini-api/docs/api-key?hl=pt-br">site</a>!</p>',
+            unsafe_allow_html=True)
+        if api_key:
+            st.session_state.api_key = api_key
+
+    # Upload de documentos PDF
+    if not st.session_state.uploaded_pdfs:
+        st.write("Por favor, faça o upload e processe os documentos PDF para ativar o chat")
+        pdf_docs = st.file_uploader("Carregar PDFs", type=["pdf"], accept_multiple_files=True)
+        if pdf_docs:
+            st.session_state.uploaded_pdfs = pdf_docs
+            
+    if st.session_state.api_key and st.session_state.uploaded_pdfs:
+        genai.configure(api_key=api_key)
         #st.write(f"Chave API fornecida: {api_key}")  # Adicionando um log de depuração
         
         if 'docs_processed' not in st.session_state:
