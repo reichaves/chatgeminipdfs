@@ -104,142 +104,85 @@ Outras expressões que podem ser utilizadas para se referir a licitações sem c
     Contratação direta: Essa expressão é utilizada para se referir à modalidade de contratação que a administração pública pode utilizar em casos de inexigibilidade de licitação.
 É importante ressaltar que a inexigibilidade de licitação não é sinônimo de falta de transparência ou de controle. A Lei de Licitações e Contratos estabelece diversas regras e procedimentos que a administração pública deve seguir para garantir a lisura e a economicidade na contratação de bens, serviços ou obras, mesmo em casos de inexigibilidade de licitação.
 Alguns exemplos de situações em que a inexigibilidade de licitação pode ser aplicada:
-    Aquisição de bens ou serviços com fornecedor único: Quando existe apenas um único fornecedor para o bem ou serviço que a administração pública precisa adquirir, a licitação torna-se inviável.
-    Contratação em caso de emergência: Em situações de urgência ou calamidade pública, a administração pública pode contratar bens, serviços ou obras sem licitação, para garantir o atendimento imediato das necessidades da população.
-    Contratação de serviços artísticos ou culturais: A Lei de Licitações e Contratos permite a contratação direta de artistas ou profissionais de cultura, sem a necessidade de licitação, para a realização de obras de arte, espetáculos ou outros eventos culturais.
-
-    Os documentos que trazem respostas de um pedido de acesso à informação pela Lei nº 12.527/2011 (LAI - Lei de Acesso à Informação) normalmente possuem:
-- Nome do órgão público
-- Nomes dos setores do órgão público responsáveis pelas informações
-- Assunto
-- Resumo da demanda
-- Informações complementares
-- Nomes das pessoas responsáveis pela resposta do pedido da LAI
-- Data da resposta
-É importante que a análise dos documentos que citam a LAI feita por este chatbot tragam informações:
-- Data
-- Protocolo NUP
-- Nome do órgão público
-- Nomes das pessoas responsáveis pela resposta do pedido da LAI
-- Data da resposta
-- E demais informações de resumo que demonstrem se o pedido da LAI foi totalmente atendido, parcialmente ou foi negado
-
+    Aquisição de bens ou serviços com fornecedor único: Quando existe apenas um único fornecedor para o bem ou serviço que a administração pública necessita, como no caso de medicamentos patenteados ou serviços especializados.
+    Contratação de serviços técnicos profissionais: Quando a administração pública necessita de serviços técnicos profissionais especializados, como consultorias, assessorias, treinamentos ou auditorias, que só podem ser realizados por profissionais ou empresas com notória especialização.
+    Contratação de serviços de publicidade: Quando a administração pública necessita de serviços de publicidade para campanhas institucionais ou de utilidade pública.
+    Importante: A inexigibilidade de licitação não se aplica a situações de emergência ou calamidade pública, que são tratadas por outras modalidades de contratação previstas na Lei de Licitações e Contratos.
+Referências:
+Para mais informações sobre inexigibilidade de licitação e outros aspectos das licitações públicas no Brasil, você pode consultar os seguintes sites:
+    Portal da Transparência: https://portaldatransparencia.gov.br/
+    Ministério da Economia: https://www.gov.br/economia/pt-br
+    Tribunal de Contas da União: https://www.TCU.gov.br/
+    Lei de Licitações e Contratos (Lei nº 14.133/2021): https://www.planalto.gov.br/ccivil_03/_Ato2019-2022/2021/Lei/L14133.htm
+    
     """
 
-    prompt_template = f"""
-    {instructions}
-    Contexto:\n{{context}}\n
-    Questão: \n{{question}}\n
-
-    Resposta:
+    template = """
+    {text}
     """
+    prompt = PromptTemplate(template=template, input_variables=["text"])
+
+    guardrails_config_path = "./qa_guardrails_config.xml"
+
+    output_parser = GuardrailsOutputParser.from_rail_string(Path(guardrails_config_path).read_text())
+    qa_chain = load_qa_chain(
+        model = ChatGoogleGenerativeAI(
+        model="gemini-1.0-pro", 
+        temperature=0,
+        candidate_count=1,
+        safety_settings = {
+            HarmCategory.HARM_CATEGORY_UNSPECIFIED: HarmBlockThreshold.BLOCK_ONLY_HIGH,
+            HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT: HarmBlockThreshold.BLOCK_ONLY_HIGH,
+            HarmCategory.HARM_CATEGORY_HATE_SPEECH: HarmBlockThreshold.BLOCK_ONLY_HIGH,
+            HarmCategory.HARM_CATEGORY_HARASSMENT: HarmBlockThreshold.BLOCK_ONLY_HIGH,
+            HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT: HarmBlockThreshold.BLOCK_ONLY_HIGH
+        }, 
+        api_key=api_key),
+        chain_type="stuff",
+        prompt=prompt,
+        output_parser=output_parser
+    )
+    return qa_chain
+
+# Inicializar a aplicação Streamlit
+def main():
+    st.set_page_config(page_title="Ferramenta de análise de documentos PDF com IA")
+    st.header("Ferramenta de análise de documentos PDF com IA")
     
-    # Carregar o modelo de IA de conversação com as configurações de segurança especificadas
-    model = ChatGoogleGenerativeAI(model="gemini-1.0-pro", 
-                                   temperature=0,
-                                   candidate_count=1,
-                                   safety_settings = {
-                                       HarmCategory.HARM_CATEGORY_UNSPECIFIED: HarmBlockThreshold.BLOCK_ONLY_HIGH,
-                                       HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT: HarmBlockThreshold.BLOCK_ONLY_HIGH,
-                                       HarmCategory.HARM_CATEGORY_HATE_SPEECH: HarmBlockThreshold.BLOCK_ONLY_HIGH,
-                                       HarmCategory.HARM_CATEGORY_HARASSMENT: HarmBlockThreshold.BLOCK_ONLY_HIGH,
-                                       HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT: HarmBlockThreshold.BLOCK_ONLY_HIGH
-                                      }, 
-                                  api_key=api_key)
-    
-    prompt = PromptTemplate(template=prompt_template, input_variables=["context", "question"]) # Configurar o modelo de prompt
-    chain = load_qa_chain(model, chain_type="stuff", prompt=prompt) # Carregue a cadeia de Perguntas e Respostas com o modelo e o prompt
-    return chain
+    # Campo para inserir a API Key do Gemini
+    if "api_key" not in st.session_state:
+        st.session_state.api_key = ""
+    if "uploaded_pdfs" not in st.session_state:
+        st.session_state.uploaded_pdfs = []
 
-# Função para processar a entrada do usuário e gerar respostas
-def user_input(user_question, api_key):
-    if 'history' not in st.session_state: # Inicializar o histórico da sessão, se ainda não estiver presente
-        st.session_state.history = []
+    if not st.session_state.api_key:
+        st.write("Digite sua API Key do Gemini")
+        api_key = st.text_input("API Key do Gemini", type="password")
+        if api_key:
+            st.session_state.api_key = api_key
 
-    embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001", api_key=api_key) # Carrega embeddings
-    new_db = FAISS.load_local("faiss_index", embeddings, allow_dangerous_deserialization=True) # Carregar o index FAISS local
-    docs = new_db.similarity_search(user_question)  # Realizar pesquisa de similaridade com a pergunta do usuário
-    chain = get_conversational_chain(api_key) # Obter a cadeia de conversação
+    # Upload de documentos PDF
+    if not st.session_state.uploaded_pdfs:
+        st.write("Por favor, faça o upload e processe os documentos PDF para ativar o chat")
+        pdf_docs = st.file_uploader("Carregar PDFs", type=["pdf"], accept_multiple_files=True)
+        if pdf_docs:
+            st.session_state.uploaded_pdfs = pdf_docs
 
-    # Obter a resposta do chatbot
-    response = chain({"input_documents": docs, "question": user_question}, return_only_outputs=True) 
-    st.session_state.history.append({"question": user_question, "answer": response["output_text"]}) # Anexar a interação ao histórico
-    
-    for interaction in st.session_state.history:
-        st.write(f":bust_in_silhouette: {interaction['question']}") # Mostra a questão
-        st.write(f"🤖{interaction['answer']}") # Mostra a resposta
-
-# Função principal para configurar o aplicativo Streamlit
-def main():   
-    st.set_page_config(page_title="Chatbot com vários PDFs", page_icon=":books:")
-    st.header("Chatbot com vários PDFs :books:")
-
-    # Criar um novo loop se não houver um existente
-    try:
-        loop = asyncio.get_event_loop()
-        if loop.is_closed():
-            loop = asyncio.new_event_loop()
-            asyncio.set_event_loop(loop)
-    except RuntimeError:
-        loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(loop)
-
-    api_key = st.text_input("Digite sua API Key do Gemini:", type="password", key="api_key_input")
-    
-    st.markdown(
-    f'<p style="font-size:18px;">Veja como obter uma API Key neste <a href="https://ai.google.dev/gemini-api/docs/api-key?hl=pt-br">site</a>!</p>',
-    unsafe_allow_html=True)
-    genai.configure(api_key=api_key)
-
-    if api_key:
-        #st.write(f"Chave API fornecida: {api_key}")  # Adicionando um log de depuração
+    if st.session_state.api_key and st.session_state.uploaded_pdfs:
+        with st.spinner("Processando os documentos PDF..."):
+            raw_text = get_pdf_text(st.session_state.uploaded_pdfs)
+            text_chunks = get_text_chunks(raw_text)
+            get_vector_store(text_chunks, st.session_state.api_key)
+            st.success("Documentos PDF processados com sucesso!")
         
-        if 'docs_processed' not in st.session_state:
-            st.session_state['docs_processed'] = False
-
-        if not st.session_state['docs_processed']:
-            st.subheader("Por favor, faça o upload e processe os documentos PDF para ativar o chat.")
+        # Campo de entrada de perguntas do usuário
+        user_question = st.text_input("Faça sua pergunta sobre os documentos:")
         
-        with st.sidebar:
-            st.title("Menu:")
-            st.markdown("""
-            **ANTES DE ESCREVER PERGUNTAS:**
-            - **A)** Faça o upload (Browse files) de seus arquivos PDF (pode demorar alguns minutos).
-            - **B)** Clique no botão Processar, 
-            - **C)** Aguarde a mensagem 'Done'.
-            - Se encontrar erros de processamento, reinicie com F5.
-            """)
-            pdf_docs = st.file_uploader("Upload PDF files", accept_multiple_files=True, key="pdf_uploader", label_visibility="collapsed")
-            if st.button("Processar", key='process'):
-                if pdf_docs:
-                    with st.spinner("Processando..."):
-                        raw_text = get_pdf_text(pdf_docs)
-                        text_chunks = get_text_chunks(raw_text)
-                        get_vector_store(text_chunks, api_key)
-                        st.success("Done")
-                        st.session_state['docs_processed'] = True
-                else:
-                    st.error("Por favor, faça o upload de pelo menos um arquivo PDF antes de processar.")
-            
-            st.warning(
-                """
-                Atenção: Os documentos que você compartilhar com o modelo de IA generativa podem ser usados pelo Gemini para treinar o sistema...
-                """
-            )
-    
-        if st.session_state['docs_processed']:
-            user_question = st.text_input("Faça perguntas para 'entrevistar' o PDF...", key="user_question_input")
-            if user_question:
-                user_input(user_question, api_key)
-        
-        st.sidebar.title("Sobre este app")
-        st.sidebar.info(
-            "Este aplicativo foi desenvolvido por Reinaldo Chaves. "
-            "Para mais informações, contribuições e feedback, visite o repositório do projeto: "
-            "[GitHub](https://github.com/reichaves/chatgeminipdfs)."
-        )
-    
+        if user_question:
+            docs = vector_store.similarity_search(user_question)  # Procurar documentos relevantes
+            chain = get_conversational_chain(st.session_state.api_key)
+            response = chain.run(input_documents=docs, question=user_question)
+            st.write(response)  # Mostrar a resposta do chatbot
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()
-
