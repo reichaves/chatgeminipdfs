@@ -19,6 +19,17 @@ from google.generativeai.types.safety_types import HarmBlockThreshold, HarmCateg
 from langchain_community.output_parsers.rail_parser import GuardrailsOutputParser
 import asyncio
 
+# Função para validar a API Key
+def validate_api_key(api_key):
+    try:
+        genai.configure(api_key=api_key)
+        model = ChatGoogleGenerativeAI(model="gemini-1.0-pro", api_key=api_key)
+        # Tentar uma chamada simples
+        response = model("Hello, world!")
+        return True
+    except Exception as e:
+        return False
+        
 # Função para extrair texto de vários documentos PDF
 def get_pdf_text(pdf_docs):
     text = ""
@@ -186,6 +197,15 @@ def main():
     
     # Adicionar campo para API Key
     api_key = st.text_input("Digite a sua própria Gemini API Key para começar", type="password")
+
+    # Validar a API Key
+    if st.button("Validar API Key"):
+        if validate_api_key(api_key):
+            st.success("API Key válida! Você pode começar a usar o chatbot.")
+            st.session_state['api_valid'] = True
+        else:
+            st.error("API Key inválida. Por favor, tente novamente.")
+            st.session_state['api_valid'] = False
 
     st.header("Chatbot com vários PDFs :books:") # Configura o header da página
 
