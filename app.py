@@ -152,11 +152,11 @@ Alguns exemplos de situações em que a inexigibilidade de licitação pode ser 
     return chain
 
 # Função para processar a entrada do usuário e gerar respostas
-def user_input(user_question):
+def user_input(user_question, api_key):
     if 'history' not in st.session_state: # Inicializar o histórico da sessão, se ainda não estiver presente
         st.session_state.history = []
 
-    embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001") # Carrega embeddings
+    embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001", api_key=api_key) # Carrega embeddings
     new_db = FAISS.load_local("faiss_index", embeddings, allow_dangerous_deserialization=True) # Carregar o index FAISS local
     docs = new_db.similarity_search(user_question)  # Realizar pesquisa de similaridade com a pergunta do usuário
     chain = get_conversational_chain() # Obter a cadeia de conversação
