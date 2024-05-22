@@ -19,12 +19,6 @@ from google.generativeai.types.safety_types import HarmBlockThreshold, HarmCateg
 from langchain_community.output_parsers.rail_parser import GuardrailsOutputParser
 import asyncio
 
-# Carregar variáveis de ambiente
-load_dotenv()
-os.getenv("GOOGLE_API_KEY")
-genai.configure(api_key=os.getenv("GOOGLE_API_KEY")) # Configurar a API de IA generativa do Google
-
-
 # Função para extrair texto de vários documentos PDF
 def get_pdf_text(pdf_docs):
     text = ""
@@ -42,13 +36,13 @@ def get_text_chunks(text):
     return chunks
 
 # Função para criar um armazenamento vetorial a partir de pedaços de texto
-def get_vector_store(text_chunks):
-    embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001") # Carrega o modelo de embedding
+def get_vector_store(text_chunks, api_key):
+    embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001", api_key=api_key) # Carrega o modelo de embedding
     vector_store = FAISS.from_texts(text_chunks, embedding=embeddings) # Criar um armazenamento vetorial FAISS a partir dos blocos de texto
     vector_store.save_local("faiss_index")  # Salvar o armazenamento de vetores localmente para uso posterior
 
 # Função para criar uma cadeia de respostas de conversação usando um modelo
-def get_conversational_chain():
+def get_conversational_chain(api_key):
     # Instruções detalhadas sobre a operação do chatbot e o formato da resposta
     instructions = """
     Sempre termine as respostas com "Todas as informações precisam ser checadas com as fontes das informações".
@@ -150,21 +144,22 @@ Alguns exemplos de situações em que a inexigibilidade de licitação pode ser 
                                        HarmCategory.HARM_CATEGORY_HATE_SPEECH: HarmBlockThreshold.BLOCK_ONLY_HIGH,
                                        HarmCategory.HARM_CATEGORY_HARASSMENT: HarmBlockThreshold.BLOCK_ONLY_HIGH,
                                        HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT: HarmBlockThreshold.BLOCK_ONLY_HIGH
-                                      })
+                                      },
+                                   api_key=api_key)
     
     prompt = PromptTemplate(template=prompt_template, input_variables=["context", "question"]) # Configurar o modelo de prompt
     chain = load_qa_chain(model, chain_type="stuff", prompt=prompt) # Carregue a cadeia de Perguntas e Respostas com o modelo e o prompt
     return chain
 
 # Função para processar a entrada do usuário e gerar respostas
-def user_input(user_question):
+def user_input(user_question, api_key):
     if 'history' not in st.session_state: # Inicializar o histórico da sessão, se ainda não estiver presente
         st.session_state.history = []
 
-    embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001") # Carrega embeddings
+    embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001", api_key=api_key) # Carrega embeddings
     new_db = FAISS.load_local("faiss_index", embeddings, allow_dangerous_deserialization=True) # Carregar o index FAISS local
     docs = new_db.similarity_search(user_question)  # Realizar pesquisa de similaridade com a pergunta do usuário
-    chain = get_conversational_chain() # Obter a cadeia de conversação
+    chain = get_conversational_chain(api_key) # Obter a cadeia de conversação
 
     # Obter a resposta do chatbot
     response = chain({"input_documents": docs, "question": user_question}, return_only_outputs=True) 
@@ -189,6 +184,9 @@ def main():
     if 'docs_processed' not in st.session_state:
         st.session_state['docs_processed'] = False
     
+    # Adicionar campo para API Key
+    api_key = st.text_input("Digite a sua própria Gemini API Key para começar", type="password")
+
     st.header("Chatbot com vários PDFs :books:") # Configura o header da página
 
     # Subheader condicional que avisa sobre a necessidade de processar documentos antes do chat
@@ -211,7 +209,7 @@ def main():
                 with st.spinner("Processando..."):
                     raw_text = get_pdf_text(pdf_docs)
                     text_chunks = get_text_chunks(raw_text)
-                    get_vector_store(text_chunks)
+                    get_vector_store(text_chunks, api_key)
                     st.success("Done")
                     st.session_state['docs_processed'] = True  # Atualiza a flag para verdadeiro após o processamento
             else:
@@ -235,7 +233,7 @@ def main():
     if st.session_state['docs_processed']:
         user_question = st.text_input("Faça perguntas para 'entrevistar' o PDF (por exemplo, processos judiciais, contratos públicos, respostas da LAI etc). Se citar siglas nas perguntas coloque - a sigla e o seu significado. Atenção: Todas as respostas precisam ser checadas!")
         if user_question:
-            user_input(user_question)  # Processa a pergunta do usuário
+            user_input(user_question, api_key)  # Processa a pergunta do usuário
             
     st.sidebar.title("Sobre este app")
     st.sidebar.info(
