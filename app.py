@@ -197,6 +197,7 @@ def main():
     
     # Adicionar campo para API Key
     api_key = st.text_input("Digite a sua própria Gemini API Key para começar", type="password")
+    print(api_key)
 
     # Validar a API Key
     if st.button("Validar API Key"):
