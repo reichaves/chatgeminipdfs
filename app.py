@@ -159,7 +159,7 @@ def user_input(user_question, api_key):
     embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001", api_key=api_key) # Carrega embeddings
     new_db = FAISS.load_local("faiss_index", embeddings, allow_dangerous_deserialization=True) # Carregar o index FAISS local
     docs = new_db.similarity_search(user_question)  # Realizar pesquisa de similaridade com a pergunta do usuário
-    chain = get_conversational_chain() # Obter a cadeia de conversação
+    chain = get_conversational_chain(api_key) # Obter a cadeia de conversação
 
     # Obter a resposta do chatbot
     response = chain({"input_documents": docs, "question": user_question}, return_only_outputs=True) 
