@@ -209,7 +209,7 @@ def main():
             - **C)** Aguarde a mensagem 'Done'.
             - Se encontrar erros de processamento, reinicie com F5.
             """)
-            pdf_docs = st.file_uploader("", accept_multiple_files=True, key="pdf_uploader")
+            pdf_docs = st.file_uploader("Upload PDF files", accept_multiple_files=True, key="pdf_uploader", label_visibility="collapsed")
             if st.button("Processar", key='process'):
                 if pdf_docs:
                     with st.spinner("Processando..."):
