@@ -24,9 +24,8 @@ def validate_api_key(api_key):
     try:
         genai.configure(api_key=api_key)
         model = ChatGoogleGenerativeAI(model="gemini-1.0-pro", api_key=api_key)
-        # Tentar uma chamada simples
-        response = model("Hello, world!")
-        return True
+        response = model({"context": "Hello, world!", "question": "How are you?"})
+        return True if response else False
     except Exception as e:
         return False
         
