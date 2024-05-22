@@ -19,12 +19,6 @@ from google.generativeai.types.safety_types import HarmBlockThreshold, HarmCateg
 from langchain_community.output_parsers.rail_parser import GuardrailsOutputParser
 import asyncio
 
-# Carregar variáveis de ambiente
-load_dotenv()
-os.getenv("GOOGLE_API_KEY")
-genai.configure(api_key=os.getenv("GOOGLE_API_KEY")) # Configurar a API de IA generativa do Google
-
-
 # Função para extrair texto de vários documentos PDF
 def get_pdf_text(pdf_docs):
     text = ""
@@ -42,13 +36,13 @@ def get_text_chunks(text):
     return chunks
 
 # Função para criar um armazenamento vetorial a partir de pedaços de texto
-def get_vector_store(text_chunks):
-    embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001") # Carrega o modelo de embedding
+def get_vector_store(text_chunks, api_key):
+    embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001", api_key=api_key) # Carrega o modelo de embedding
     vector_store = FAISS.from_texts(text_chunks, embedding=embeddings) # Criar um armazenamento vetorial FAISS a partir dos blocos de texto
     vector_store.save_local("faiss_index")  # Salvar o armazenamento de vetores localmente para uso posterior
 
 # Função para criar uma cadeia de respostas de conversação usando um modelo
-def get_conversational_chain():
+def get_conversational_chain(api_key):
     # Instruções detalhadas sobre a operação do chatbot e o formato da resposta
     instructions = """
     Sempre termine as respostas com "Todas as informações precisam ser checadas com as fontes das informações".
@@ -150,7 +144,8 @@ Alguns exemplos de situações em que a inexigibilidade de licitação pode ser 
                                        HarmCategory.HARM_CATEGORY_HATE_SPEECH: HarmBlockThreshold.BLOCK_ONLY_HIGH,
                                        HarmCategory.HARM_CATEGORY_HARASSMENT: HarmBlockThreshold.BLOCK_ONLY_HIGH,
                                        HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT: HarmBlockThreshold.BLOCK_ONLY_HIGH
-                                      })
+                                      }, 
+                                  api_key=api_key)
     
     prompt = PromptTemplate(template=prompt_template, input_variables=["context", "question"]) # Configurar o modelo de prompt
     chain = load_qa_chain(model, chain_type="stuff", prompt=prompt) # Carregue a cadeia de Perguntas e Respostas com o modelo e o prompt
@@ -176,75 +171,75 @@ def user_input(user_question):
 
 # Função principal para configurar o aplicativo Streamlit
 def main():   
-    st.set_page_config(page_title="Chatbot com vários PDFs", page_icon=":books:") # Configura a página
+    st.set_page_config(page_title="Chatbot com vários PDFs", page_icon=":books:")
+    st.header("Chatbot com vários PDFs :books:")
 
-    # Inicia um loop de eventos se necessário para operações assíncronas
+    # Criar um novo loop se não houver um existente
     try:
         loop = asyncio.get_event_loop()
+        if loop.is_closed():
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
     except RuntimeError:
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
 
-    # Inicializando ou resetando a flag de documentos processados
-    if 'docs_processed' not in st.session_state:
-        st.session_state['docs_processed'] = False
+    api_key = st.text_input("Digite sua API Key do Gemini:", type="password", key="api_key_input")
     
-    st.header("Chatbot com vários PDFs :books:") # Configura o header da página
+    st.markdown(
+    f'<p style="font-size:18px;">Veja como obter uma API Key neste <a href="https://ai.google.dev/gemini-api/docs/api-key?hl=pt-br">site</a>!</p>',
+    unsafe_allow_html=True)
+    genai.configure(api_key=api_key)
 
-    # Subheader condicional que avisa sobre a necessidade de processar documentos antes do chat
-    if not st.session_state['docs_processed']:
-        st.subheader("Por favor, faça o upload e processe os documentos PDF para ativar o chat.")
-           
-    with st.sidebar: # Configura a barra lateral para upload
-        st.title("Menu:")
-        st.markdown("""
+    if api_key:
+        #st.write(f"Chave API fornecida: {api_key}")  # Adicionando um log de depuração
+        
+        if 'docs_processed' not in st.session_state:
+            st.session_state['docs_processed'] = False
+
+        if not st.session_state['docs_processed']:
+            st.subheader("Por favor, faça o upload e processe os documentos PDF para ativar o chat.")
+        
+        with st.sidebar:
+            st.title("Menu:")
+            st.markdown("""
             **ANTES DE ESCREVER PERGUNTAS:**
             - **A)** Faça o upload (Browse files) de seus arquivos PDF (pode demorar alguns minutos).
             - **B)** Clique no botão Processar, 
             - **C)** Aguarde a mensagem 'Done'.
             - Se encontrar erros de processamento, reinicie com F5.
             """)
-        
-        pdf_docs = st.file_uploader("", accept_multiple_files=True, key="pdf_uploader")
-        if st.button("Processar", key='process'):
-            if pdf_docs:
-                with st.spinner("Processando..."):
-                    raw_text = get_pdf_text(pdf_docs)
-                    text_chunks = get_text_chunks(raw_text)
-                    get_vector_store(text_chunks)
-                    st.success("Done")
-                    st.session_state['docs_processed'] = True  # Atualiza a flag para verdadeiro após o processamento
-            else:
-                st.error("Por favor, faça o upload de pelo menos um arquivo PDF antes de processar.")
-             
-        st.warning(
-            """
-            Atenção: Os documentos que você compartilhar com o modelo de IA generativa podem ser usados pelo Gemini para treinar o sistema. Portanto, evite compartilhar documentos PDF que contenham:
-            1. Dados bancários e financeiros
-            2. Dados de sua própria empresa
-            3. Informações pessoais
-            4. Informações de propriedade intelectual
-            5. Conteúdos autorais
-
-            E não use IA para escrever um texto inteiro! O auxílio é melhor para gerar resumos, filtrar informações ou auxiliar a entender contextos - que depois devem ser checados. Inteligência Artificial comete erros! (são apenas modelos estatísticos que tentam prever a próxima palavra mais provável e assim criam uma resposta)
-            Este projeto não se responsabiliza pelos conteúdos criados a partir deste site.
-            """
-            )
-        
-    # Input para perguntas só é ativado se documentos foram processados
-    if st.session_state['docs_processed']:
-        user_question = st.text_input("Faça perguntas para 'entrevistar' o PDF (por exemplo, processos judiciais, contratos públicos, respostas da LAI etc). Se citar siglas nas perguntas coloque - a sigla e o seu significado. Atenção: Todas as respostas precisam ser checadas!")
-        if user_question:
-            user_input(user_question)  # Processa a pergunta do usuário
+            pdf_docs = st.file_uploader("", accept_multiple_files=True, key="pdf_uploader")
+            if st.button("Processar", key='process'):
+                if pdf_docs:
+                    with st.spinner("Processando..."):
+                        raw_text = get_pdf_text(pdf_docs)
+                        text_chunks = get_text_chunks(raw_text)
+                        get_vector_store(text_chunks, api_key)
+                        st.success("Done")
+                        st.session_state['docs_processed'] = True
+                else:
+                    st.error("Por favor, faça o upload de pelo menos um arquivo PDF antes de processar.")
             
-    st.sidebar.title("Sobre este app")
-    st.sidebar.info(
-        "Este aplicativo foi desenvolvido por Reinaldo Chaves. "
-        "Para mais informações, contribuições e feedback, visite o repositório do projeto: "
-        "[GitHub](https://github.com/reichaves/chatgeminipdfs)."
-    )
-
+            st.warning(
+                """
+                Atenção: Os documentos que você compartilhar com o modelo de IA generativa podem ser usados pelo Gemini para treinar o sistema...
+                """
+            )
     
-# Começa o programa
+        if st.session_state['docs_processed']:
+            user_question = st.text_input("Faça perguntas para 'entrevistar' o PDF...", key="user_question_input")
+            if user_question:
+                user_input(user_question, api_key)
+        
+        st.sidebar.title("Sobre este app")
+        st.sidebar.info(
+            "Este aplicativo foi desenvolvido por Reinaldo Chaves. "
+            "Para mais informações, contribuições e feedback, visite o repositório do projeto: "
+            "[GitHub](https://github.com/reichaves/chatgeminipdfs)."
+        )
+    
+
 if __name__ == "__main__":
     main()
+
