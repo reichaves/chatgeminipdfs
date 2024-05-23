@@ -264,7 +264,7 @@ def main():
             )
     
         if st.session_state['docs_processed']:
-            user_question = st.text_input("Faça perguntas para 'entrevistar' o PDF...", key="user_question_input")
+            user_question = st.text_input("Faça perguntas para 'entrevistar' o PDF (por exemplo, processos judicias, contratos públicos, respostas da LAI etc). Se citar siglas nas perguntas coloque - a sigla e o seu significado. Atenção: Todas as respostas precisam ser checadas!", key="user_question_input")
             if user_question:
                 user_input(user_question, st.session_state.api_key)
         
