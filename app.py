@@ -205,29 +205,32 @@ def main():
         pdf_docs = st.file_uploader("Carregar PDFs", type=["pdf"], accept_multiple_files=True)
         if pdf_docs:
             st.session_state.uploaded_pdfs = pdf_docs
-            
+
     if st.session_state.api_key and st.session_state.uploaded_pdfs:
         genai.configure(api_key=st.session_state.api_key)
         #st.write(f"Chave API fornecida: {api_key}")  # Adicionando um log de depuração
         
         if 'docs_processed' not in st.session_state:
             st.session_state['docs_processed'] = False
-       
+
+        if not st.session_state['docs_processed']:
+            st.subheader("Por favor, faça o upload e processe os documentos PDF para ativar o chat.")
+        
         with st.sidebar:
             st.title("Menu:")
             st.markdown("""
             - Se encontrar erros de processamento, reinicie com F5.
             """)
             
-            if pdf_docs:
+            if st.session_state.uploaded_pdfs:
                 with st.spinner("Processando..."):
-                    raw_text = get_pdf_text(pdf_docs)
+                    raw_text = get_pdf_text(st.session_state.uploaded_pdfs)
                     text_chunks = get_text_chunks(raw_text)
                     get_vector_store(text_chunks, st.session_state.api_key)
                     st.success("Done")
                     st.session_state['docs_processed'] = True
             else:
-                    st.error("Por favor, faça o upload de pelo menos um arquivo PDF antes de processar.")
+                st.error("Por favor, faça o upload de pelo menos um arquivo PDF antes de processar.")
             
             st.warning(
                 """
