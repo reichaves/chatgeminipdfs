@@ -174,6 +174,22 @@ def main():
     st.set_page_config(page_title="Chatbot com vários PDFs", page_icon=":books:")
     st.header("Chatbot com vários PDFs :books:")
 
+    with st.sidebar:
+        st.warning(
+            """
+        Atenção: Os documentos que você compartilhar com o modelo de IA generativa podem ser usados pelo Gemini para treinar o sistema. Portanto, evite compartilhar documentos PDF que contenham:
+        1. Dados bancários e financeiros
+        2. Dados de sua própria empresa
+        3. Informações pessoais
+        4. Informações de propriedade intelectual
+        5. Conteúdos autorais
+        
+        E não use IA para escrever um texto inteiro! O auxílio é melhor para gerar resumos, filtrar informações ou auxiliar a entender contextos - que depois devem ser checados. Inteligência Artificial comete erros!
+        
+        Este projeto não se responsabiliza pelos conteúdos criados a partir deste site.
+        """
+            )
+    
     # Criar um novo loop se não houver um existente
     try:
         loop = asyncio.get_event_loop()
