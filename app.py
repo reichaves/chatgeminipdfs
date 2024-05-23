@@ -207,7 +207,7 @@ def main():
             st.session_state.uploaded_pdfs = pdf_docs
             
     if st.session_state.api_key and st.session_state.uploaded_pdfs:
-        genai.configure(api_key=api_key)
+        genai.configure(api_key=st.session_state.api_key)
         #st.write(f"Chave API fornecida: {api_key}")  # Adicionando um log de depuração
         
         if 'docs_processed' not in st.session_state:
@@ -231,7 +231,7 @@ def main():
                     with st.spinner("Processando..."):
                         raw_text = get_pdf_text(pdf_docs)
                         text_chunks = get_text_chunks(raw_text)
-                        get_vector_store(text_chunks, api_key)
+                        get_vector_store(text_chunks, st.session_state.api_key)
                         st.success("Done")
                         st.session_state['docs_processed'] = True
                 else:
@@ -246,7 +246,7 @@ def main():
         if st.session_state['docs_processed']:
             user_question = st.text_input("Faça perguntas para 'entrevistar' o PDF...", key="user_question_input")
             if user_question:
-                user_input(user_question, api_key)
+                user_input(user_question, st.session_state.api_key)
         
         st.sidebar.title("Sobre este app")
         st.sidebar.info(
