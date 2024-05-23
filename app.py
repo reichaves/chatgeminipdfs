@@ -216,22 +216,17 @@ def main():
         with st.sidebar:
             st.title("Menu:")
             st.markdown("""
-            **ANTES DE ESCREVER PERGUNTAS:**
-            - **A)** Faça o upload (Browse files) de seus arquivos PDF (pode demorar alguns minutos).
-            - **B)** Clique no botão Processar, 
-            - **C)** Aguarde a mensagem 'Done'.
             - Se encontrar erros de processamento, reinicie com F5.
             """)
-            pdf_docs = st.file_uploader("Upload PDF files", accept_multiple_files=True, key="pdf_uploader", label_visibility="collapsed")
-            if st.button("Processar", key='process'):
-                if pdf_docs:
-                    with st.spinner("Processando..."):
-                        raw_text = get_pdf_text(pdf_docs)
-                        text_chunks = get_text_chunks(raw_text)
-                        get_vector_store(text_chunks, st.session_state.api_key)
-                        st.success("Done")
-                        st.session_state['docs_processed'] = True
-                else:
+            
+            if pdf_docs:
+                with st.spinner("Processando..."):
+                    raw_text = get_pdf_text(pdf_docs)
+                    text_chunks = get_text_chunks(raw_text)
+                    get_vector_store(text_chunks, st.session_state.api_key)
+                    st.success("Done")
+                    st.session_state['docs_processed'] = True
+            else:
                     st.error("Por favor, faça o upload de pelo menos um arquivo PDF antes de processar.")
             
             st.warning(
