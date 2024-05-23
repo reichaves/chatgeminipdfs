@@ -212,10 +212,7 @@ def main():
         
         if 'docs_processed' not in st.session_state:
             st.session_state['docs_processed'] = False
-
-        if not st.session_state['docs_processed']:
-            st.subheader("Por favor, faça o upload e processe os documentos PDF para ativar o chat.")
-        
+       
         with st.sidebar:
             st.title("Menu:")
             st.markdown("""
