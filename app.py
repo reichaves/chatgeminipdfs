@@ -1,10 +1,10 @@
 # -*- coding: utf-8
 # Reinaldo Chaves (reichaves@gmail.com)
-# Script de chatbot que usa gemini-1.0-pro, embedding-001 e streamlit para entrevistar jornalisticamente arquivos .PDF
-# Programa é um projeto apresentado na Imersão IA 2024 Alura e Google
+# Chatbot script that uses gemini-1.0-pro, embedding-001 and streamlit to journalistically interview .PDF files
+# Program is a project presented at Alura and Google's AI Immersion 2024
 #
 
-# Importar as bibliotecas necessárias
+# Import the necessary libraries
 import streamlit as st
 from PyPDF2 import PdfReader
 import os
@@ -19,31 +19,31 @@ from google.generativeai.types.safety_types import HarmBlockThreshold, HarmCateg
 from langchain_community.output_parsers.rail_parser import GuardrailsOutputParser
 import asyncio
 
-# Função para extrair texto de vários documentos PDF
+# Function to extract text from several PDF documents
 def get_pdf_text(pdf_docs):
     text = ""
     for pdf in pdf_docs:
-        pdf_reader = PdfReader(pdf) # Inicializar um leitor de PDF para cada documento
-        for page in pdf_reader.pages:  # Iterar em cada página do PDF
-            text += page.extract_text() # Extrai o texto da página e adiciona-o à variável text
-    return text # Retorna o texto concatenado de todos os PDFs
+        pdf_reader = PdfReader(pdf) # Initialize a PDF reader for each document
+        for page in pdf_reader.pages: # Iterate on each PDF page
+            text += page.extract_text() # Extract the text from the page and add it to the text variable
+    return text # Returns the concatenated text of all PDFs
 
-# Função para dividir o texto em partes que são mais fáceis de gerenciar e processar
+# Function to split the text into parts that are easier to manage and process
 def get_text_chunks(text):
-    # Configure o divisor de texto para dividir o texto em partes, cada uma com até 10.000 caracteres, com uma sobreposição de 1.000 caracteres
+    # Configure the text splitter to split the text into chunks, each up to 10,000 characters long, with an overlap of 1,000 characters
     text_splitter = RecursiveCharacterTextSplitter(chunk_size=10000, chunk_overlap=1000)
-    chunks = text_splitter.split_text(text)  # Dividir o texto em partes (chunks)
+    chunks = text_splitter.split_text(text) # Split the text into parts (chunks)
     return chunks
 
-# Função para criar um armazenamento vetorial a partir de pedaços de texto
+# Function to create a vector store from text chunks
 def get_vector_store(text_chunks, api_key):
-    embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001", api_key=api_key) # Carrega o modelo de embedding
-    vector_store = FAISS.from_texts(text_chunks, embedding=embeddings) # Criar um armazenamento vetorial FAISS a partir dos blocos de texto
-    vector_store.save_local("faiss_index")  # Salvar o armazenamento de vetores localmente para uso posterior
+    embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001", api_key=api_key) # Load the embedding model
+    vector_store = FAISS.from_texts(text_chunks, embedding=embeddings) # Create a FAISS vector store from the text blocks
+    vector_store.save_local("faiss_index") # Save the vector store locally for later use
 
-# Função para criar uma cadeia de respostas de conversação usando um modelo
+# Function to create a chain of conversational responses using a template
 def get_conversational_chain(api_key):
-    # Instruções detalhadas sobre a operação do chatbot e o formato da resposta
+    # Detailed instructions on chatbot operation and response format - in Brazilian Portuguese and for types of documents of public interest in the country
     instructions = """
     Sempre termine as respostas com "Todas as informações precisam ser checadas com as fontes das informações".
     Você é um assistente para analisar documentos .PDF com um contexto jornalístico. Por exemplo: 
@@ -134,7 +134,7 @@ Alguns exemplos de situações em que a inexigibilidade de licitação pode ser 
     Resposta:
     """
     
-    # Carregar o modelo de IA de conversação com as configurações de segurança especificadas
+    # Load the conversational AI model with the specified security settings
     model = ChatGoogleGenerativeAI(model="gemini-1.0-pro", 
                                    temperature=0,
                                    candidate_count=1,
@@ -147,29 +147,29 @@ Alguns exemplos de situações em que a inexigibilidade de licitação pode ser 
                                       }, 
                                   api_key=api_key)
     
-    prompt = PromptTemplate(template=prompt_template, input_variables=["context", "question"]) # Configurar o modelo de prompt
-    chain = load_qa_chain(model, chain_type="stuff", prompt=prompt) # Carregue a cadeia de Perguntas e Respostas com o modelo e o prompt
+    prompt = PromptTemplate(template=prompt_template, input_variables=["context", "question"]) # Configure the prompt template
+    chain = load_qa_chain(model, chain_type="stuff", prompt=prompt) # Load the Q&A string with the template and prompt
     return chain
 
-# Função para processar a entrada do usuário e gerar respostas
+# Function to process user input and generate responses
 def user_input(user_question, api_key):
-    if 'history' not in st.session_state: # Inicializar o histórico da sessão, se ainda não estiver presente
+    if 'history' not in st.session_state: # Initialize session history, if not already present
         st.session_state.history = []
 
-    embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001", api_key=api_key) # Carrega embeddings
-    new_db = FAISS.load_local("faiss_index", embeddings, allow_dangerous_deserialization=True) # Carregar o index FAISS local
-    docs = new_db.similarity_search(user_question)  # Realizar pesquisa de similaridade com a pergunta do usuário
-    chain = get_conversational_chain(api_key) # Obter a cadeia de conversação
+    embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001", api_key=api_key) # Load embeddings
+    new_db = FAISS.load_local("faiss_index", embeddings, allow_dangerous_deserialization=True) # Load the local FAISS index
+    docs = new_db.similarity_search(user_question) # Perform similarity search with user question
+    chain = get_conversational_chain(api_key) # Get the conversation chain
 
-    # Obter a resposta do chatbot
+    # Get a response from the chatbot
     response = chain({"input_documents": docs, "question": user_question}, return_only_outputs=True) 
-    st.session_state.history.append({"question": user_question, "answer": response["output_text"]}) # Anexar a interação ao histórico
+    st.session_state.history.append({"question": user_question, "answer": response["output_text"]}) # Attach the interaction to the history
     
     for interaction in st.session_state.history:
-        st.write(f":bust_in_silhouette: {interaction['question']}") # Mostra a questão
-        st.write(f"🤖{interaction['answer']}") # Mostra a resposta
+        st.write(f":bust_in_silhouette: {interaction['question']}") # Show the question
+        st.write(f"🤖{interaction['answer']}") # Show the answer
 
-# Função principal para configurar o aplicativo Streamlit
+# Main function for configuring the Streamlit application
 def main():   
     st.set_page_config(page_title="Chatbot com vários PDFs", page_icon=":books:")
     st.header("Chatbot com vários PDFs :books:")
@@ -202,7 +202,7 @@ def main():
         )
 
     
-    # Criar um novo loop se não houver um existente
+    # Create a new loop if there isn't an existing one
     try:
         loop = asyncio.get_event_loop()
         if loop.is_closed():
@@ -212,7 +212,7 @@ def main():
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
 
-    # Campo para inserir a API Key do Gemini
+    # Field to enter the Gemini API Key
     if "api_key" not in st.session_state:
         st.session_state.api_key = ""
     if "uploaded_pdfs" not in st.session_state:
@@ -227,7 +227,7 @@ def main():
         if api_key:
             st.session_state.api_key = api_key
 
-    # Upload de documentos PDF
+    # Upload PDF documents
     if not st.session_state.uploaded_pdfs:
         st.write("Por favor, faça o upload e processe os documentos PDF para ativar o chat")
         pdf_docs = st.file_uploader("Carregar PDFs", type=["pdf"], accept_multiple_files=True)
@@ -236,7 +236,7 @@ def main():
 
     if st.session_state.api_key and st.session_state.uploaded_pdfs:
         genai.configure(api_key=st.session_state.api_key)
-        #st.write(f"Chave API fornecida: {api_key}")  # Adicionando um log de depuração
+        #st.write(f"Chave API fornecida: {api_key}")  # Adding a debug log
         
         with st.sidebar:           
             if st.session_state.uploaded_pdfs:
