@@ -233,9 +233,18 @@ def main():
                 st.error("Por favor, faça o upload de pelo menos um arquivo PDF antes de processar.")
             
             st.warning(
-                """
-                Atenção: Os documentos que você compartilhar com o modelo de IA generativa podem ser usados pelo Gemini para treinar o sistema...
-                """
+               """
+        Atenção: Os documentos que você compartilhar com o modelo de IA generativa podem ser usados pelo Gemini para treinar o sistema. Portanto, evite compartilhar documentos PDF que contenham:
+        1. Dados bancários e financeiros
+        2. Dados de sua própria empresa
+        3. Informações pessoais
+        4. Informações de propriedade intelectual
+        5. Conteúdos autorais
+        
+        E não use IA para escrever um texto inteiro! O auxílio é melhor para gerar resumos, filtrar informações ou auxiliar a entender contextos - que depois devem ser checados. Inteligência Artificial comete erros!
+        
+        Este projeto não se responsabiliza pelos conteúdos criados a partir deste site.
+        """
             )
     
         if st.session_state['docs_processed']:
