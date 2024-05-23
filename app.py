@@ -175,6 +175,11 @@ def main():
     st.header("Chatbot com vários PDFs :books:")
 
     with st.sidebar:
+        st.title("Menu:")
+            st.markdown("""
+            - Se encontrar erros de processamento, reinicie com F5.
+            """)
+        
         st.warning(
             """
         Atenção: Os documentos que você compartilhar com o modelo de IA generativa podem ser usados pelo Gemini para treinar o sistema. Portanto, evite compartilhar documentos PDF que contenham:
@@ -195,6 +200,7 @@ def main():
             "Para mais informações, contribuições e feedback, visite o repositório do projeto: "
             "[GitHub](https://github.com/reichaves/chatgeminipdfs)."
         )
+
     
     # Criar um novo loop se não houver um existente
     try:
@@ -232,12 +238,7 @@ def main():
         genai.configure(api_key=st.session_state.api_key)
         #st.write(f"Chave API fornecida: {api_key}")  # Adicionando um log de depuração
         
-        with st.sidebar:
-            st.title("Menu:")
-            st.markdown("""
-            - Se encontrar erros de processamento, reinicie com F5.
-            """)
-            
+        with st.sidebar:           
             if st.session_state.uploaded_pdfs:
                 with st.spinner("Processando..."):
                     raw_text = get_pdf_text(st.session_state.uploaded_pdfs)
@@ -247,34 +248,11 @@ def main():
                     st.session_state['docs_processed'] = True
             else:
                 st.error("Por favor, faça o upload de pelo menos um arquivo PDF antes de processar.")
-            
-            st.warning(
-               """
-        Atenção: Os documentos que você compartilhar com o modelo de IA generativa podem ser usados pelo Gemini para treinar o sistema. Portanto, evite compartilhar documentos PDF que contenham:
-        1. Dados bancários e financeiros
-        2. Dados de sua própria empresa
-        3. Informações pessoais
-        4. Informações de propriedade intelectual
-        5. Conteúdos autorais
-        
-        E não use IA para escrever um texto inteiro! O auxílio é melhor para gerar resumos, filtrar informações ou auxiliar a entender contextos - que depois devem ser checados. Inteligência Artificial comete erros!
-        
-        Este projeto não se responsabiliza pelos conteúdos criados a partir deste site.
-        """
-            )
     
         if st.session_state['docs_processed']:
             user_question = st.text_input("Faça perguntas para 'entrevistar' o PDF (por exemplo, processos judicias, contratos públicos, respostas da LAI etc). Se citar siglas nas perguntas coloque - a sigla e o seu significado. Atenção: Todas as respostas precisam ser checadas!", key="user_question_input")
             if user_question:
                 user_input(user_question, st.session_state.api_key)
-        
-        st.sidebar.title("Sobre este app")
-        st.sidebar.info(
-            "Este aplicativo foi desenvolvido por Reinaldo Chaves. "
-            "Para mais informações, contribuições e feedback, visite o repositório do projeto: "
-            "[GitHub](https://github.com/reichaves/chatgeminipdfs)."
-        )
     
-
 if __name__ == "__main__":
     main()
