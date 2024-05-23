@@ -189,6 +189,12 @@ def main():
         Este projeto não se responsabiliza pelos conteúdos criados a partir deste site.
         """
             )
+        st.sidebar.title("Sobre este app")
+        st.sidebar.info(
+            "Este aplicativo foi desenvolvido por Reinaldo Chaves. "
+            "Para mais informações, contribuições e feedback, visite o repositório do projeto: "
+            "[GitHub](https://github.com/reichaves/chatgeminipdfs)."
+        )
     
     # Criar um novo loop se não houver um existente
     try:
