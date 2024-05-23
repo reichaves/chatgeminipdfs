@@ -176,9 +176,9 @@ def main():
 
     with st.sidebar:
         st.title("Menu:")
-            st.markdown("""
-            - Se encontrar erros de processamento, reinicie com F5.
-            """)
+        st.markdown("""
+        - Se encontrar erros de processamento, reinicie com F5.
+        """)
         
         st.warning(
             """
