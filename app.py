@@ -40,6 +40,8 @@ def get_vector_store(text_chunks, api_key):
     embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001", api_key=api_key)  # Load the embedding model
     vector_store = FAISS.from_texts(text_chunks, embedding=embeddings)  # Create a FAISS vector store from the text blocks
     st.session_state['vector_store'] = vector_store  # Store the vector store in the session state instead of saving it locally.
+    # Local option
+    # vector_store.save_local("faiss_index") # Save the vector store locally for later use
 
 # Function to create a chain of conversational responses using a template
 def get_conversational_chain(api_key):
