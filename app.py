@@ -37,9 +37,9 @@ def get_text_chunks(text):
 
 # Function to create a vector store from text chunks
 def get_vector_store(text_chunks, api_key):
-    embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001", api_key=api_key) # Load the embedding model
-    vector_store = FAISS.from_texts(text_chunks, embedding=embeddings) # Create a FAISS vector store from the text blocks
-    vector_store.save_local("faiss_index") # Save the vector store locally for later use
+    embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001", api_key=api_key)  # Load the embedding model
+    vector_store = FAISS.from_texts(text_chunks, embedding=embeddings)  # Create a FAISS vector store from the text blocks
+    st.session_state['vector_store'] = vector_store  # Store the vector store in the session state instead of saving it locally.
 
 # Function to create a chain of conversational responses using a template
 def get_conversational_chain(api_key):
@@ -153,21 +153,26 @@ Alguns exemplos de situações em que a inexigibilidade de licitação pode ser 
 
 # Function to process user input and generate responses
 def user_input(user_question, api_key):
-    if 'history' not in st.session_state: # Initialize session history, if not already present
+    if 'history' not in st.session_state:  # Initialize session history, if not already present
         st.session_state.history = []
 
-    embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001", api_key=api_key) # Load embeddings
-    new_db = FAISS.load_local("faiss_index", embeddings, allow_dangerous_deserialization=True) # Load the local FAISS index
-    docs = new_db.similarity_search(user_question) # Perform similarity search with user question
-    chain = get_conversational_chain(api_key) # Get the conversation chain
+    # Check if vector store not found
+    if 'vector_store' not in st.session_state:
+        st.error("O armazenamento de vetores não foi encontrado. Faça upload e processe os documentos PDF primeiro.")
+        return
+
+    vector_store = st.session_state['vector_store']
+    embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001", api_key=api_key)  # Load embeddings
+    docs = vector_store.similarity_search(user_question)  # Perform similarity search with user question
+    chain = get_conversational_chain(api_key)  # Get the conversation chain
 
     # Get a response from the chatbot
-    response = chain({"input_documents": docs, "question": user_question}, return_only_outputs=True) 
-    st.session_state.history.append({"question": user_question, "answer": response["output_text"]}) # Attach the interaction to the history
+    response = chain({"input_documents": docs, "question": user_question}, return_only_outputs=True)
+    st.session_state.history.append({"question": user_question, "answer": response["output_text"]})  # Attach the interaction to the history
     
     for interaction in st.session_state.history:
-        st.write(f":bust_in_silhouette: {interaction['question']}") # Show the question
-        st.write(f"🤖{interaction['answer']}") # Show the answer
+        st.write(f":bust_in_silhouette: {interaction['question']}")  # Show the question
+        st.write(f"🤖{interaction['answer']}")  # Show the answer
 
 # Main function for configuring the Streamlit application
 def main():   
