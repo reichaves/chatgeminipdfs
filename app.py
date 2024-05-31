@@ -185,6 +185,7 @@ def main():
         st.title("Menu:")
         st.markdown("""
         - Se encontrar erros de processamento, reinicie com F5.
+        - Para recomeçar uma nova sessão pressione F5.
         """)
         
         st.warning(
