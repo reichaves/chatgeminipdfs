@@ -184,7 +184,7 @@ def main():
     with st.sidebar:
         st.title("Menu:")
         st.markdown("""
-        - Se encontrar erros de processamento, reinicie com F5.
+        - Se encontrar erros de processamento, reinicie com F5. Utilize arquivos .PDF com textos não digitalizados como imagens.
         - Para recomeçar uma nova sessão pressione F5.
         """)
         
