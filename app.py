@@ -1,6 +1,6 @@
 # -*- coding: utf-8
 # Reinaldo Chaves (reichaves@gmail.com)
-# Chatbot script that uses gemini-1.0-pro, embedding-001 and streamlit to journalistically interview .PDF files
+# Chatbot script that uses gemini-1.5-pro, embedding-001 and streamlit to journalistically interview .PDF files
 # Program is a project presented at Alura and Google's AI Immersion 2024
 #
 
