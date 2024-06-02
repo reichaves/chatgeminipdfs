@@ -137,7 +137,7 @@ Alguns exemplos de situações em que a inexigibilidade de licitação pode ser 
     """
     
     # Load the conversational AI model with the specified security settings
-    model = ChatGoogleGenerativeAI(model="gemini-1.0-pro", 
+    model = ChatGoogleGenerativeAI(model="gemini-1.5-pro", 
                                    temperature=0,
                                    candidate_count=1,
                                    safety_settings = {
