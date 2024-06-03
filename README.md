@@ -36,7 +36,7 @@ Veja como pegar uma API Key do Gemini aqui **[aqui](https://ai.google.dev/gemini
 
 ## Tecnologias Utilizadas
 
-- **Gemini-1.0-pro:** Modelo de linguagem conversacional do Google AI
+- **Gemini-1.5-pro:** Modelo de linguagem conversacional do Google AI
 - **Embedding-001:** Modelo de incorporação de texto do Google AI
 - **Streamlit:** Biblioteca Python para criar interfaces web interativas
 - **PyPDF2:** Biblioteca Python para trabalhar com arquivos PDF
